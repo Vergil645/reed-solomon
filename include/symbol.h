@@ -46,82 +46,38 @@ typedef struct symbol_seq {
 } symbol_seq_t;
 
 /**
- * @brief Allocate symbol memory.
+ * @brief Allocate symbol.
  *
- * @param s symbol.
  * @param symbol_size symbol size.
+ * @param s symbol.
  * @return 0 on success,\n
  *         1 on memory allocation error.
  */
-int alloc_symbol(symbol_t *s, size_t symbol_size) {
-    assert(s != NULL);
-
-    s->data = (element_t *)malloc(symbol_size * sizeof(element_t));
-    return s->data == NULL ? 1 : 0;
-}
+int alloc_symbol(size_t symbol_size, symbol_t *s);
 
 /**
- * @brief Deallocate symbol memory.
+ * @brief Deallocate symbol.
  *
  * @param s symbol.
  */
-void free_symbol(symbol_t *s) {
-    assert(s != NULL);
-
-    free(s->data);
-}
+void free_symbol(symbol_t *s);
 
 /**
- * @brief Create a symbol_seq_t object.
+ * @brief Allocate sequence.
  *
- * @param seq sequence.
  * @param symbol_size symbol size.
  * @param seq_length sequence length.
+ * @param seq sequence.
  * @return 0 on success,\n
  *         1 on memory allocation error.
  */
-int create_seq(symbol_seq_t *seq, size_t symbol_size, size_t seq_length) {
-    assert(seq != NULL);
-
-    symbol_t *symbols;
-    int ret;
-
-    symbols = (symbol_t *)malloc(seq_length * sizeof(symbol_t));
-    if (!symbols) {
-        return 1;
-    }
-
-    for (size_t i = 0; i < seq_length; ++i) {
-        ret = alloc_symbol(symbols + i, symbol_size);
-        if (ret) {
-            for (size_t j = 0; j < i; ++j) {
-                free_symbol(symbols + i);
-            }
-            free(symbols);
-            return ret;
-        }
-    }
-
-    *seq = {
-        .symbol_size = symbol_size,
-        .seq_length = seq_length,
-        .symbols = symbols,
-    };
-}
+int alloc_seq(size_t symbol_size, size_t seq_length, symbol_seq_t *seq);
 
 /**
- * @brief Deallocate sequence memory.
+ * @brief Deallocate sequence.
  *
  * @param seq sequence.
  */
-void free_seq(symbol_seq_t *seq) {
-    size_t seq_length = seq->seq_length;
-    symbol_t *symbols = seq->symbols;
-
-    for (size_t i = 0; i < seq_length; ++i) {
-        free_symbol(symbols + i);
-    }
-    free(symbols);
-}
+void free_seq(symbol_seq_t *seq);
 
 #endif

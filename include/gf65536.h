@@ -10,9 +10,7 @@
 #ifndef __REED_SOLOMON_GF65536_H__
 #define __REED_SOLOMON_GF65536_H__
 
-#include <assert.h>
 #include <stdint.h>
-#include <stdlib.h>
 
 #include "constants.h"
 
@@ -58,30 +56,7 @@ typedef struct GF_t {
  * @return 0 on success,\n
  *         1 on memory allocation error.
  */
-int gf_alloc(GF_t *gf) {
-    assert(gf != NULL);
-
-    element_t *pow_table;
-    uint16_t *log_table;
-
-    pow_table = (element_t *)malloc(N * sizeof(element_t));
-    if (!pow_table) {
-        return 1;
-    }
-
-    log_table = (element_t *)malloc(N * sizeof(element_t));
-    if (!log_table) {
-        free(pow_table);
-        return 1;
-    }
-
-    *gf = {
-        .pow_table = pow_table,
-        .log_table = log_table,
-    };
-
-    return 0;
-}
+int gf_alloc(GF_t *gf);
 
 /**
  * @brief Make necessary for Galois field implementation pre-calculations.
@@ -91,65 +66,37 @@ int gf_alloc(GF_t *gf) {
  *
  * @param gf Galois field data.
  */
-void gf_init(GF_t *gf) {
-    assert(gf != NULL);
-
-    element_t *pow_table = gf->pow_table;
-    uint16_t *log_table = gf->log_table;
-    poly_t cur_poly = 1;
-
-    for (uint16_t i = 0; i < N; ++i) {
-        pow_table[i] = (element_t)cur_poly;
-        log_table[(element_t)cur_poly] = i;
-
-        cur_poly <<= 1;
-        if (cur_poly & (N + 1)) {
-            cur_poly ^= GF_PRIMITIVE_POLY;
-        }
-    }
-}
+void gf_init(GF_t *gf);
 
 /**
  * @brief Deallocate Galois field data.
  *
  * @param gf Galois field data.
  */
-void gf_free(GF_t *gf) {
-    assert(gf != NULL);
-
-    free(gf->log_table);
-    free(gf->pow_table);
-}
+void gf_free(GF_t *gf);
 
 /**
  * @brief Compute multiplication of 2 elements in Galois field.
  * @details Use pre-computed data to optimize computation process:
- * \f$a * b = \alpha^{(\log_{\alpha} a + \log_{\alpha} b) mod N}\f$
+ * \f$a * b = \alpha^{(\log_{\alpha} a + \log_{\alpha} b) \mod N}\f$
  *
  * @param gf Galois field data.
  * @param a first multiplier.
  * @param b second multiplier.
  * @return multiplication result.
  */
-inline element_t gf_mul_ee(const GF_t *gf, element_t a, element_t b) {
-    assert(gf != NULL);
+element_t gf_mul_ee(const GF_t *gf, element_t a, element_t b);
 
-    uint16_t *log_table = gf->log_table;
-    uint16_t a_log = log_table[a];
-    uint16_t b_log = log_table[b];
-
-    return gf->pow_table[(a_log + b_log) % N];
-}
-
-inline element_t gf_div_ee(const GF_t *gf, element_t a, element_t b) {
-    assert(gf != NULL);
-    assert(b != 0);
-
-    uint16_t *log_table = gf->log_table;
-    uint16_t a_log = log_table[a];
-    uint16_t b_log = log_table[b];
-
-    return gf->pow_table[(N + a_log - b_log) % N];
-}
+/**
+ * @brief Compute quotient of 2 elements in Galois field.
+ * @details Use pre-computed data to optimize computation process:
+ * \f$a / b = \alpha^{(\log_{\alpha} a - \log_{\alpha} b) \mod N}\f$
+ *
+ * @param gf Galois field data.
+ * @param a divisible element.
+ * @param b divisor.
+ * @return division result.
+ */
+element_t gf_div_ee(const GF_t *gf, element_t a, element_t b);
 
 #endif

@@ -12,7 +12,14 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 include_directories("include")
 
 set(SOURCES "src")
-# add_executable(compare "${SOURCES}/compare.cc")
+set(LIBRS_SOURCES "src/librs")
+
+add_library(rs STATIC
+    "${LIBRS_SOURCES}/cyclotomic_coset.c"
+    "${LIBRS_SOURCES}/fft.c"
+    "${LIBRS_SOURCES}/gf65536.c"
+    "${LIBRS_SOURCES}/reed_solomon.c"
+    "${LIBRS_SOURCES}/symbol.c")
 
 # ===== TESTING =====
 
