@@ -9,7 +9,7 @@
 
 #include <assert.h>
 
-#include "fft.h"
+#include <fft.h>
 
 int fft_alloc(FFT_t *fft) {
     // Nothing

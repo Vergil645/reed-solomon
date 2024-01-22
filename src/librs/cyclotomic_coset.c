@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "cyclotomic_coset.h"
+#include <cyclotomic_coset.h>
 
 /**
  * @brief Initialize cyclotomic coset by given values.
@@ -30,7 +30,7 @@
             .size = (_size),                                                   \
         };                                                                     \
         (_coset) = __coset_tmp__;                                              \
-    } while (0);
+    } while (0)
 
 /**
  * @brief Minimum of 2 values.

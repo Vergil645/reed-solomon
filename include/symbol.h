@@ -13,7 +13,7 @@
 
 #include <stdlib.h>
 
-#include "gf65536.h"
+#include <gf65536.h>
 
 /**
  * @brief Symbol data type. Can be passed to functions by value.

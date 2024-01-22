@@ -12,7 +12,7 @@
 
 #include <stdint.h>
 
-#include "constants.h"
+#include <prelude.h>
 
 /**
  * @brief Primitive polynomial of a Galois field: x^16 + x^5 + x^3 + x^2 + 1.

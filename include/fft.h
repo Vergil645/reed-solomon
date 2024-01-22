@@ -13,8 +13,8 @@
 
 #include <stdint.h>
 
-#include "gf65536.h"
-#include "symbol.h"
+#include <gf65536.h>
+#include <symbol.h>
 
 /**
  * @brief Galois field data and pre-computed values.

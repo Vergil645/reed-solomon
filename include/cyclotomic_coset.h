@@ -12,7 +12,7 @@
 
 #include <stdint.h>
 
-#include "constants.h"
+#include <prelude.h>
 
 /**
  * @brief Number of leaders of cyclotomic cosets of size 1.

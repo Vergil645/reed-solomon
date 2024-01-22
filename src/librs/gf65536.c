@@ -10,7 +10,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include "gf65536.h"
+#include <gf65536.h>
 
 int gf_alloc(GF_t *gf) {
     assert(gf != NULL);
@@ -63,6 +63,10 @@ void gf_free(GF_t *gf) {
 inline element_t gf_mul_ee(const GF_t *gf, element_t a, element_t b) {
     assert(gf != NULL);
 
+    if (a == 0 || b == 0) {
+        return 0;
+    }
+
     uint16_t *log_table = gf->log_table;
     uint32_t a_log = (uint32_t)log_table[a];
     uint32_t b_log = (uint32_t)log_table[b];
@@ -73,6 +77,10 @@ inline element_t gf_mul_ee(const GF_t *gf, element_t a, element_t b) {
 inline element_t gf_div_ee(const GF_t *gf, element_t a, element_t b) {
     assert(gf != NULL);
     assert(b != 0);
+
+    if (a == 0) {
+        return 0;
+    }
 
     uint16_t *log_table = gf->log_table;
     uint32_t a_log = (uint32_t)log_table[a];
