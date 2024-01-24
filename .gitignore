@@ -3,6 +3,8 @@
 /build
 /bin
 /lib
+/test/bin
+/test/lib
 
 /html
 /latex
