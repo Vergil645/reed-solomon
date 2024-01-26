@@ -167,7 +167,7 @@ _static void _rs_get_repair_symbols_evaluator_poly(
     assert(syndrome_poly.symbol_size == evaluator_poly.symbol_size);
 
     size_t symbol_size = syndrome_poly.symbol_size;
-    uint16_t r = syndrome_poly.seq_length;
+    uint16_t r = syndrome_poly.length;
 
     // Evaluator polynomial initialization.
     for (uint16_t i = 0; i < r; ++i) {
@@ -204,11 +204,11 @@ _static void _rs_get_repair_symbols(const RS_t *rs,
     size_t symbol_size = evaluator_poly.symbol_size;
     element_t coef;
 
-    fft_selective_transform(rs->fft, evaluator_poly, rep_symbols,
+    fft_partial_transform(rs->fft, evaluator_poly, rep_symbols,
                             rep_positions);
 
     // TODO: implement deffered Forney scalling
-    for (uint16_t i = 0; i < rep_symbols.seq_length; ++i) {
+    for (uint16_t i = 0; i < rep_symbols.length; ++i) {
         coef = forney_coefs[i];
 
         for (size_t e_idx = 0; e_idx < symbol_size; ++e_idx) {
@@ -221,12 +221,12 @@ _static void _rs_get_repair_symbols(const RS_t *rs,
 int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
                                symbol_seq_t rep_symbols) {
     assert(rs != NULL);
-    assert(inf_symbols.seq_length + rep_symbols.seq_length <= N);
+    assert(inf_symbols.length + rep_symbols.length <= N);
 
     CC_t *cc = rs->cc;
     int ret;
-    uint16_t k = inf_symbols.seq_length;
-    uint16_t r = rep_symbols.seq_length;
+    uint16_t k = inf_symbols.length;
+    uint16_t r = rep_symbols.length;
     uint16_t inf_max_cnt;
     uint16_t rep_max_cnt;
     uint16_t inf_cosets_cnt;
@@ -287,7 +287,7 @@ int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
         return 1;
     }
 
-    ret = alloc_seq(SYMBOL_SIZE, r, &syndrome_poly);
+    ret = seq_alloc(SYMBOL_SIZE, r, &syndrome_poly);
     if (ret) {
         free(forney_coefs);
         free(locator_poly);
@@ -298,9 +298,9 @@ int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
         return ret;
     }
 
-    ret = alloc_seq(SYMBOL_SIZE, r, &evaluator_poly);
+    ret = seq_alloc(SYMBOL_SIZE, r, &evaluator_poly);
     if (ret) {
-        free_seq(&syndrome_poly);
+        seq_free(&syndrome_poly);
         free(forney_coefs);
         free(locator_poly);
         free(rep_positions);
@@ -330,8 +330,8 @@ int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
     _rs_get_repair_symbols(rs, forney_coefs, evaluator_poly, rep_symbols,
                            rep_positions);
 
-    free_seq(&evaluator_poly);
-    free_seq(&syndrome_poly);
+    seq_free(&evaluator_poly);
+    seq_free(&syndrome_poly);
     free(forney_coefs);
     free(locator_poly);
     free(rep_positions);

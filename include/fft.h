@@ -14,6 +14,7 @@
 #include <stdint.h>
 
 #include <gf65536.h>
+#include <seq.h>
 #include <symbol.h>
 
 /**
@@ -42,6 +43,13 @@ int fft_alloc(FFT_t *fft);
 void fft_init(FFT_t *fft, GF_t *gf);
 
 /**
+ * @brief Deallocate context object.
+ *
+ * @param fft context object.
+ */
+void fft_free(FFT_t *fft);
+
+/**
  * @brief Compute a given number of first components of Discrete Fourier
  * transform of a given sequence.
  * @details \f$\mathcal{F}_{r,\Theta}(f)\f$ - computes \f$F_0, \dots, F_{r-1}\f$
@@ -66,9 +74,10 @@ void fft_transform(const FFT_t *fft, symbol_seq_t f, const uint16_t *positions,
  * @param fft context object.
  * @param f sequence coefficients.
  * @param res where to place the result.
- * @param components components of Discrete Fourier transform to be computed.
+ * @param components negative components of the discrete Fourier transform to be
+ * calculated.
  */
-void fft_selective_transform(const FFT_t *fft, symbol_seq_t f, symbol_seq_t res,
-                             const uint16_t *components);
+void fft_partial_transform(const FFT_t *fft, symbol_seq_t f, symbol_seq_t res,
+                           const uint16_t *components);
 
 #endif

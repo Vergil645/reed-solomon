@@ -109,14 +109,7 @@ void cc_free(CC_t *cc) {
     free(cc->leaders_16);
 }
 
-/**
- * @brief Calculate a number of cyclotomic cosets the union of which has a given
- * size.
- *
- * @param r union size.
- * @return number of cyclotomic cosets.
- */
-static uint16_t cc_get_cosets_cnt(uint16_t r) {
+_static uint16_t _cc_get_cosets_cnt(uint16_t r) {
     uint16_t cosets_cnt = 0;
     uint16_t cosets_cnt_inc;
 
@@ -155,8 +148,8 @@ static uint16_t cc_get_cosets_cnt(uint16_t r) {
 
 void cc_estimate_cosets_cnt(uint16_t k, uint16_t r, uint16_t *inf_max_cnt,
                             uint16_t *rep_max_cnt) {
-    *inf_max_cnt = cc_get_cosets_cnt(k); // upper limit
-    *rep_max_cnt = cc_get_cosets_cnt(r); // accurate estimation
+    *inf_max_cnt = _cc_get_cosets_cnt(k); // upper limit
+    *rep_max_cnt = _cc_get_cosets_cnt(r); // accurate estimation
 }
 
 void cc_select_cosets(const CC_t *cc, uint16_t k, uint16_t r,

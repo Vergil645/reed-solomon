@@ -7,8 +7,18 @@ project(reed-solomon_test LANGUAGES C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
+# ==========================
+# ===== BUILDING TESTS =====
+# ==========================
+
+include_directories("include")
+
 set(SOURCES "src")
 set(LIBRS_SOURCES "src/librs")
+
+add_library(util STATIC "${SOURCES}/util.c")
+
+# --- librs/gf65536
 
 add_executable(test_gf_mul_ee "${LIBRS_SOURCES}/gf65536/test_gf_mul_ee.c")
 target_link_libraries(test_gf_mul_ee rs)
@@ -16,7 +26,45 @@ target_link_libraries(test_gf_mul_ee rs)
 add_executable(test_gf_div_ee "${LIBRS_SOURCES}/gf65536/test_gf_div_ee.c")
 target_link_libraries(test_gf_div_ee rs)
 
-# ===== TESTS =====
+# --- librs/cyclotomic_coset
+
+add_executable(test__cc_get_cosets_cnt "${LIBRS_SOURCES}/cyclotomic_coset/test__cc_get_cosets_cnt.c")
+target_link_libraries(test__cc_get_cosets_cnt rs)
+
+add_executable(test_cc_estimate_cosets_cnt "${LIBRS_SOURCES}/cyclotomic_coset/test_cc_estimate_cosets_cnt.c")
+target_link_libraries(test_cc_estimate_cosets_cnt rs)
+
+add_executable(test_cc_select_cosets "${LIBRS_SOURCES}/cyclotomic_coset/test_cc_select_cosets.c")
+target_link_libraries(test_cc_select_cosets rs)
+
+add_executable(test_cc_cosets_to_positions "${LIBRS_SOURCES}/cyclotomic_coset/test_cc_cosets_to_positions.c")
+target_link_libraries(test_cc_cosets_to_positions rs util)
+
+# --- librs/fft
+
+add_executable(test_fft_transform "${LIBRS_SOURCES}/fft/test_fft_transform.c")
+target_link_libraries(test_fft_transform rs util)
+
+add_executable(test_fft_partial_transform "${LIBRS_SOURCES}/fft/test_fft_partial_transform.c")
+target_link_libraries(test_fft_partial_transform rs util)
+
+# =========================
+# ===== RUNNING TESTS =====
+# =========================
+
+# --- librs/gf65536
 
 add_test(NAME test_gf_mul_ee COMMAND test_gf_mul_ee)
 add_test(NAME test_gf_div_ee COMMAND test_gf_div_ee)
+
+# --- librs/cyclotomic_coset
+
+add_test(NAME test__cc_get_cosets_cnt COMMAND test__cc_get_cosets_cnt)
+add_test(NAME test_cc_estimate_cosets_cnt COMMAND test_cc_estimate_cosets_cnt)
+add_test(NAME test_cc_select_cosets COMMAND test_cc_select_cosets)
+add_test(NAME test_cc_cosets_to_positions COMMAND test_cc_cosets_to_positions)
+
+# --- librs/fft
+
+add_test(NAME test_fft_transform COMMAND test_fft_transform)
+add_test(NAME test_fft_partial_transform COMMAND test_fft_partial_transform)

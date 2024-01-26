@@ -16,6 +16,7 @@
 #include <cyclotomic_coset.h>
 #include <fft.h>
 #include <prelude.h>
+#include <seq.h>
 #include <symbol.h>
 
 /**

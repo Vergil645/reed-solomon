@@ -210,4 +210,19 @@ void cc_select_cosets(const CC_t *cc, uint16_t k, uint16_t r,
 void cc_cosets_to_positions(const coset_t *cosets, uint16_t cosets_cnt,
                             uint16_t *positions, uint16_t positions_cnt);
 
+// Internal functions not for public use.
+// Defined here only in Debug mode in order to test them.
+#ifndef NDEBUG
+
+/**
+ * @brief Calculate a number of cyclotomic cosets the union of which has a given
+ * size.
+ *
+ * @param r union size.
+ * @return number of cyclotomic cosets.
+ */
+uint16_t _cc_get_cosets_cnt(uint16_t r);
+
+#endif
+
 #endif

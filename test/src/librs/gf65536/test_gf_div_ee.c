@@ -2,14 +2,26 @@
 
 #include <gf65536.h>
 
-#define TEST_GF_DIV_EE(_gf, _a, _b, _r)                                        \
+#define TEST_WRAPPER(_gf, _a, _b, _res)                                        \
     do {                                                                       \
-        if (gf_div_ee((_gf), (_a), (_b)) != (_r)) {                            \
-            printf("ERROR: gf_div_ee(*, %u, %u) != %u", (_a), (_b), (_r));     \
+        if (test((_gf), (_a), (_b), (_res))) {                                 \
             gf_free((_gf));                                                    \
             return 1;                                                          \
         }                                                                      \
     } while (0)
+
+static int test(const GF_t *gf, element_t a, element_t b, element_t res) {
+    element_t _res;
+
+    _res = gf_div_ee(gf, a, b);
+
+    if (_res != res) {
+        printf("ERROR: gf_div_ee(*, %u, %u) = %u != %u\n", a, b, _res, res);
+        return 1;
+    }
+
+    return 0;
+}
 
 int main(void) {
     GF_t _gf;
@@ -18,20 +30,20 @@ int main(void) {
 
     ret = gf_alloc(gf);
     if (ret) {
-        printf("ERROR: gf_alloc returned %d", ret);
+        printf("ERROR: gf_alloc returned %d\n", ret);
         return ret;
     }
 
     gf_init(gf);
 
     // Test data obtained by SageMath.
-    TEST_GF_DIV_EE(gf, 0, 45687, 0);
-    TEST_GF_DIV_EE(gf, 65512, 65512, 1);
-    TEST_GF_DIV_EE(gf, 12320, 29623, 11439);
-    TEST_GF_DIV_EE(gf, 31193, 63233, 27486);
-    TEST_GF_DIV_EE(gf, 21844, 54054, 49588);
-    TEST_GF_DIV_EE(gf, 38756, 35149, 10047);
-    TEST_GF_DIV_EE(gf, 5768, 15888, 24163);
+    TEST_WRAPPER(gf, 0, 45687, 0);
+    TEST_WRAPPER(gf, 65512, 65512, 1);
+    TEST_WRAPPER(gf, 12320, 29623, 11439);
+    TEST_WRAPPER(gf, 31193, 63233, 27486);
+    TEST_WRAPPER(gf, 21844, 54054, 49588);
+    TEST_WRAPPER(gf, 38756, 35149, 10047);
+    TEST_WRAPPER(gf, 5768, 15888, 24163);
 
     gf_free(gf);
 

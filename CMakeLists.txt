@@ -9,6 +9,10 @@ project(reed-solomon LANGUAGES C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
+# ================================
+# ===== BUILDING THE PROJECT =====
+# ================================
+
 include_directories("include")
 
 set(SOURCES "src")
@@ -19,9 +23,12 @@ add_library(rs STATIC
     "${LIBRS_SOURCES}/fft.c"
     "${LIBRS_SOURCES}/gf65536.c"
     "${LIBRS_SOURCES}/reed_solomon.c"
-    "${LIBRS_SOURCES}/symbol.c")
+    "${LIBRS_SOURCES}/symbol.c"
+    "${LIBRS_SOURCES}/seq.c")
 
+# ===================
 # ===== TESTING =====
+# ===================
 
 if(BUILD_TESTING)
     enable_testing()

@@ -18,6 +18,10 @@ int fft_alloc(FFT_t *fft) {
 
 void fft_init(FFT_t *fft, GF_t *gf) { fft->gf = gf; }
 
+void fft_free(FFT_t *fft) {
+    // Nothing
+}
+
 void fft_transform(const FFT_t *fft, symbol_seq_t f, const uint16_t *positions,
                    symbol_seq_t res) {
     assert(positions != NULL);
@@ -28,13 +32,13 @@ void fft_transform(const FFT_t *fft, symbol_seq_t f, const uint16_t *positions,
     size_t symbol_size = f.symbol_size;
     element_t x;
 
-    for (uint16_t j = 0; j < res.seq_length; ++j) {
+    for (uint16_t j = 0; j < res.length; ++j) {
         // Initialization
         for (size_t e_idx = 0; e_idx < symbol_size; ++e_idx) {
             res.symbols[j].data[e_idx] = 0;
         }
 
-        for (uint16_t f_idx = 0; f_idx < f.seq_length; ++f_idx) {
+        for (uint16_t f_idx = 0; f_idx < f.length; ++f_idx) {
             x = pow_table[(positions[f_idx] * j) % N];
 
             for (size_t e_idx = 0; e_idx < symbol_size; ++e_idx) {
@@ -45,8 +49,8 @@ void fft_transform(const FFT_t *fft, symbol_seq_t f, const uint16_t *positions,
     }
 }
 
-void fft_selective_transform(const FFT_t *fft, symbol_seq_t f, symbol_seq_t res,
-                             const uint16_t *components) {
+void fft_partial_transform(const FFT_t *fft, symbol_seq_t f, symbol_seq_t res,
+                           const uint16_t *components) {
     assert(components != NULL);
     assert(f.symbol_size == res.symbol_size);
 
@@ -56,7 +60,7 @@ void fft_selective_transform(const FFT_t *fft, symbol_seq_t f, symbol_seq_t res,
     uint16_t j;
     element_t x;
 
-    for (uint16_t res_idx = 0; res_idx < res.seq_length; ++res_idx) {
+    for (uint16_t res_idx = 0; res_idx < res.length; ++res_idx) {
         // Initialization
         for (size_t e_idx = 0; e_idx < symbol_size; ++e_idx) {
             res.symbols[res_idx].data[e_idx] = 0;
@@ -64,7 +68,7 @@ void fft_selective_transform(const FFT_t *fft, symbol_seq_t f, symbol_seq_t res,
 
         j = (N - components[res_idx]) % N;
 
-        for (uint16_t i = 0; i < f.seq_length; ++i) {
+        for (uint16_t i = 0; i < f.length; ++i) {
             x = pow_table[(i * j) % N];
 
             for (size_t e_idx = 0; e_idx < symbol_size; ++e_idx) {
