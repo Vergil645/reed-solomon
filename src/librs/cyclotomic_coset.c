@@ -178,36 +178,32 @@ void cc_select_cosets(const CC_t *cc, uint16_t k, uint16_t r,
     while (r > CC_THRESHOLD_8 && rep_idx < rep_max_cnt) {
         assert(leaders_idx[3] < CC_LEADERS_8_CNT);
         INIT_COSET(rep_cosets[rep_idx++], cc->leaders_8[leaders_idx[3]++], 8);
-        threshold[4] -= 8;
         r -= 8;
     }
 
     while (r > CC_THRESHOLD_4 && rep_idx < rep_max_cnt) {
         assert(leaders_idx[2] < CC_LEADERS_4_CNT);
         INIT_COSET(rep_cosets[rep_idx++], cc->leaders_4[leaders_idx[2]++], 4);
-        threshold[4] -= 4;
-        threshold[3] -= 4;
         r -= 4;
     }
 
     if (r > CC_THRESHOLD_2 && rep_idx < rep_max_cnt) {
         INIT_COSET(rep_cosets[rep_idx++], cc->leaders_2[leaders_idx[1]++], 2);
-        threshold[4] -= 2;
-        threshold[3] -= 2;
-        threshold[2] -= 2;
         r -= 2;
     }
 
     if (r > CC_THRESHOLD_1 && rep_idx < rep_max_cnt) {
         INIT_COSET(rep_cosets[rep_idx++], cc->leaders_1[leaders_idx[0]++], 1);
-        threshold[4] -= 1;
-        threshold[3] -= 1;
-        threshold[2] -= 1;
-        threshold[1] -= 1;
         r -= 1;
     }
 
     assert(r == 0);
+
+    for (uint16_t i = 0; i < 4; ++i) {
+        for (uint16_t idx = i + 1; idx < 4; ++idx) {
+            threshold[idx] -= leaders_idx[i] << i;
+        }
+    }
 
     *rep_cosets_cnt = rep_idx;
 
