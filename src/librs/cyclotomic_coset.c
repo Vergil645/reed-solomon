@@ -200,7 +200,7 @@ void cc_select_cosets(const CC_t *cc, uint16_t k, uint16_t r,
     assert(r == 0);
 
     for (uint16_t i = 0; i < 4; ++i) {
-        for (uint16_t idx = i + 1; idx < 4; ++idx) {
+        for (uint16_t idx = i + 1; idx <= 4; ++idx) {
             threshold[idx] -= leaders_idx[i] << i;
         }
     }
