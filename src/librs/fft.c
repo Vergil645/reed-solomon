@@ -30,20 +30,21 @@ void fft_transform(const FFT_t *fft, symbol_seq_t f, const uint16_t *positions,
     GF_t *gf = fft->gf;
     element_t *pow_table = gf->pow_table;
     size_t symbol_size = f.symbol_size;
-    element_t x;
+    element_t c;
 
     for (uint16_t j = 0; j < res.length; ++j) {
         // Initialization
+        // TODO: memset
         for (size_t e_idx = 0; e_idx < symbol_size; ++e_idx) {
             res.symbols[j].data[e_idx] = 0;
         }
 
-        for (uint16_t f_idx = 0; f_idx < f.length; ++f_idx) {
-            x = pow_table[(positions[f_idx] * j) % N];
+        for (uint16_t i = 0; i < f.length; ++i) {
+            c = pow_table[(positions[i] * j) % N];
 
             for (size_t e_idx = 0; e_idx < symbol_size; ++e_idx) {
                 res.symbols[j].data[e_idx] ^=
-                    gf_mul_ee(gf, f.symbols[f_idx].data[e_idx], x);
+                    gf_mul_ee(gf, f.symbols[i].data[e_idx], c);
             }
         }
     }
@@ -62,6 +63,7 @@ void fft_partial_transform(const FFT_t *fft, symbol_seq_t f, symbol_seq_t res,
 
     for (uint16_t res_idx = 0; res_idx < res.length; ++res_idx) {
         // Initialization
+        // TODO: memset
         for (size_t e_idx = 0; e_idx < symbol_size; ++e_idx) {
             res.symbols[res_idx].data[e_idx] = 0;
         }

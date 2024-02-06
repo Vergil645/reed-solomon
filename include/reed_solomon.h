@@ -53,6 +53,13 @@ int rs_alloc(RS_t *rs);
 void rs_init(RS_t *rs, GF_t *gf, CC_t *cc, FFT_t *fft);
 
 /**
+ * @brief Deallocate context object memory.
+ *
+ * @param rs context object.
+ */
+void rs_free(RS_t *rs);
+
+/**
  * @brief Generate repair symbols for the given information symbols.
  *
  * @param rs context object.

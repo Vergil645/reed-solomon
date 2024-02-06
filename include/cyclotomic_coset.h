@@ -15,6 +15,21 @@
 #include <prelude.h>
 
 /**
+ * @brief Number of different sizes of cyclotomic cosets.
+ */
+#define CC_COSET_SIZES_CNT 5
+
+/**
+ * @brief Number of different cyclotomic cosets.
+ */
+#define CC_COSETS_CNT 4115
+
+/**
+ * @brief Maximum cyclotomic coset size.
+ */
+#define CC_MAX_COSET_SIZE 16
+
+/**
  * @brief Number of leaders of cyclotomic cosets of size 1.
  */
 #define CC_LEADERS_1_CNT 1
@@ -38,34 +53,6 @@
  * @brief Number of leaders of cyclotomic cosets of size 16.
  */
 #define CC_LEADERS_16_CNT 4080
-
-/**
- * @brief Leaders of cyclotomic cosets of size 1.
- */
-#define CC_LEADERS_1                                                           \
-    { 0 }
-
-/**
- * @brief Leaders of cyclotomic cosets of size 2.
- */
-#define CC_LEADERS_2                                                           \
-    { 21845 }
-
-/**
- * @brief Leaders of cyclotomic cosets of size 4.
- */
-#define CC_LEADERS_4                                                           \
-    { 4369, 13107, 30583 }
-
-/**
- * @brief Leaders of cyclotomic cosets of size 8.
- */
-#define CC_LEADERS_8                                                           \
-    {                                                                          \
-        257, 771, 1285, 1799, 2313, 2827, 3341, 3855, 4883, 5397, 5911, 6425,  \
-            6939, 7453, 7967, 9509, 10023, 11051, 11565, 12079, 13621, 14135,  \
-            15163, 15677, 16191, 22359, 23387, 24415, 28527, 32639             \
-    }
 
 /**
  * @brief If (r > *value*), we have to use cyclotomic cosets of size 1.
@@ -99,14 +86,14 @@
  * @param _s current coset element.
  * @return cyclotomic coset element following _s.
  */
-#define NEXT_COSET_ELEMENT(_s) ((uint16_t)(((uint32_t)(_s) << 1) % N))
+#define NEXT_COSET_ELEMENT(_s) ((uint16_t)(((uint32_t)(_s) << 1) % 65535))
 
 /**
  * @brief Cyclotomic coset over GF(2) modulo N.
  */
 typedef struct coset {
     uint16_t leader;
-    uint16_t size;
+    uint16_t size; // FIXME: change type to uint8_t
 } coset_t;
 
 /**
@@ -114,29 +101,12 @@ typedef struct coset {
  */
 typedef struct CC {
     /**
-     * @brief Leaders of cyclotomic cosets of size 1.
+     * @brief Leaders of cyclotomic cosets.
+     * @details leaders[i] - leaders of cyclotomic cosets of size \f$2^i\f$.\n
+     * All members are pointers to different parts of one allocated memory
+     * fragment. leaders[0] - pointer to the beginning of this fragment.
      */
-    uint16_t leaders_1[CC_LEADERS_1_CNT];
-
-    /**
-     * @brief Leaders of cyclotomic cosets of size 2.
-     */
-    uint16_t leaders_2[CC_LEADERS_2_CNT];
-
-    /**
-     * @brief Leaders of cyclotomic cosets of size 4.
-     */
-    uint16_t leaders_4[CC_LEADERS_4_CNT];
-
-    /**
-     * @brief Leaders of cyclotomic cosets of size 8.
-     */
-    uint16_t leaders_8[CC_LEADERS_8_CNT];
-
-    /**
-     * @brief Leaders of cyclotomic cosets of size 16.
-     */
-    uint16_t *leaders_16;
+    uint16_t *leaders[CC_COSET_SIZES_CNT];
 } CC_t;
 
 /**

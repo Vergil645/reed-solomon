@@ -15,6 +15,11 @@
 #include <prelude.h>
 
 /**
+ * @brief Galois field size. Equal to (N + 1).
+ */
+#define GF_FIELD_SIZE 65536
+
+/**
  * @brief Primitive polynomial of a Galois field: x^16 + x^5 + x^3 + x^2 + 1.
  * @details Primitive element: \f$\alpha = x\f$.
  */

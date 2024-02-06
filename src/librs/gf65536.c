@@ -18,12 +18,12 @@ int gf_alloc(GF_t *gf) {
     element_t *pow_table;
     uint16_t *log_table;
 
-    pow_table = (element_t *)malloc(N * sizeof(element_t));
+    pow_table = (element_t *)malloc(GF_FIELD_SIZE * sizeof(element_t));
     if (!pow_table) {
         return 1;
     }
 
-    log_table = (element_t *)malloc(N * sizeof(element_t));
+    log_table = (element_t *)malloc(GF_FIELD_SIZE * sizeof(element_t));
     if (!log_table) {
         free(pow_table);
         return 1;
@@ -47,7 +47,7 @@ void gf_init(GF_t *gf) {
         log_table[(element_t)cur_poly] = i;
 
         cur_poly <<= 1;
-        if (cur_poly & (N + 1)) {
+        if (cur_poly & GF_FIELD_SIZE) {
             cur_poly ^= GF_PRIMITIVE_POLY;
         }
     }

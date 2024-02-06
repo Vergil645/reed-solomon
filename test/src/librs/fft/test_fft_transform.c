@@ -52,11 +52,11 @@ static int free_all(FFT_t *fft) {
 }
 
 int main(void) {
+    GF_t _gf;
     FFT_t _fft;
     FFT_t *fft = &_fft;
 
     {
-        GF_t _gf;
         GF_t *gf = &_gf;
         int ret;
 
@@ -84,13 +84,12 @@ int main(void) {
     // Test 1
     {
         element_t f_symbols_data[18][1] = {
-            {64380}, {58583}, {51371}, {35114}, {36301}, {53727},
-            {55096}, {57863}, {41502}, {53715}, {33804}, {47648},
-            {39570}, {41997}, {49971}, {43055}, {1947},  {13482}};
-        element_t res_symbols_data[15][1] = {{7252},  {36420}, {12001}, {9482},
-                                             {61423}, {47618}, {13544}, {43692},
-                                             {42306}, {19291}, {59234}, {5528},
-                                             {63032}, {40621}, {50939}};
+            {59446}, {52683}, {24240}, {17739}, {22147}, {6845},
+            {16105}, {43613}, {43951}, {51446}, {58809}, {26190},
+            {34396}, {23440}, {3014},  {10094}, {35896}, {16871}};
+        element_t res_symbols_data[11][1] = {{15001}, {28408}, {13550}, {14466},
+                                             {56755}, {60517}, {774},   {45685},
+                                             {40231}, {37183}, {38313}};
         symbol_t f_symbols[18] = {
             {.data = f_symbols_data[0]},  {.data = f_symbols_data[1]},
             {.data = f_symbols_data[2]},  {.data = f_symbols_data[3]},
@@ -101,85 +100,79 @@ int main(void) {
             {.data = f_symbols_data[12]}, {.data = f_symbols_data[13]},
             {.data = f_symbols_data[14]}, {.data = f_symbols_data[15]},
             {.data = f_symbols_data[16]}, {.data = f_symbols_data[17]}};
-        symbol_t res_symbols[15] = {
-            {.data = res_symbols_data[0]},  {.data = res_symbols_data[1]},
-            {.data = res_symbols_data[2]},  {.data = res_symbols_data[3]},
-            {.data = res_symbols_data[4]},  {.data = res_symbols_data[5]},
-            {.data = res_symbols_data[6]},  {.data = res_symbols_data[7]},
-            {.data = res_symbols_data[8]},  {.data = res_symbols_data[9]},
-            {.data = res_symbols_data[10]}, {.data = res_symbols_data[11]},
-            {.data = res_symbols_data[12]}, {.data = res_symbols_data[13]},
-            {.data = res_symbols_data[14]}};
+        symbol_t res_symbols[11] = {
+            {.data = res_symbols_data[0]}, {.data = res_symbols_data[1]},
+            {.data = res_symbols_data[2]}, {.data = res_symbols_data[3]},
+            {.data = res_symbols_data[4]}, {.data = res_symbols_data[5]},
+            {.data = res_symbols_data[6]}, {.data = res_symbols_data[7]},
+            {.data = res_symbols_data[8]}, {.data = res_symbols_data[9]},
+            {.data = res_symbols_data[10]}};
         symbol_seq_t f = {.symbol_size = 1, .length = 18, .symbols = f_symbols};
         symbol_seq_t res = {
-            .symbol_size = 1, .length = 15, .symbols = res_symbols};
-        uint16_t positions[18] = {49223, 41312, 43584, 31160, 51888, 57952,
-                                  23906, 10492, 7997,  26938, 59019, 38516,
-                                  39098, 43598, 64585, 29211, 12740, 4719};
+            .symbol_size = 1, .length = 11, .symbols = res_symbols};
+        uint16_t positions[18] = {35895, 7996,  51848, 25836, 56495, 24526,
+                                  3582,  25141, 22472, 33095, 45520, 53527,
+                                  31338, 26227, 1880,  6059,  41713, 56219};
 
         TEST_WRAPPER(fft, f, positions, res);
     }
 
     // Test 2
-
     {
-        element_t f_symbols_data[15][2] = {
-            {21166, 59609}, {37601, 32221}, {5359, 64128},  {45274, 58835},
-            {1555, 19095},  {37428, 59604}, {37873, 25514}, {56877, 46425},
-            {37971, 30481}, {6469, 11827},  {7500, 51432},  {7307, 20467},
-            {31112, 51161}, {39231, 31806}, {35783, 57569}};
-        element_t res_symbols_data[9][2] = {
-            {23072, 31704}, {51, 60435},    {15795, 49266},
-            {50312, 17446}, {16259, 38915}, {22497, 43659},
-            {17489, 28338}, {6294, 30118},  {7766, 32676}};
-        symbol_t f_symbols[15] = {
-            {.data = f_symbols_data[0]},  {.data = f_symbols_data[1]},
-            {.data = f_symbols_data[2]},  {.data = f_symbols_data[3]},
-            {.data = f_symbols_data[4]},  {.data = f_symbols_data[5]},
-            {.data = f_symbols_data[6]},  {.data = f_symbols_data[7]},
-            {.data = f_symbols_data[8]},  {.data = f_symbols_data[9]},
-            {.data = f_symbols_data[10]}, {.data = f_symbols_data[11]},
-            {.data = f_symbols_data[12]}, {.data = f_symbols_data[13]},
-            {.data = f_symbols_data[14]}};
-        symbol_t res_symbols[9] = {
+        element_t f_symbols_data[8][2] = {
+            {28848, 29441}, {41827, 16357}, {48099, 25582}, {36814, 19665},
+            {26286, 27808}, {21995, 64922}, {29935, 15976}, {39777, 34133}};
+        element_t res_symbols_data[8][2] = {
+            {15157, 18908}, {53272, 32519}, {47546, 14143}, {15429, 55548},
+            {5855, 32019},  {1107, 41938},  {2189, 27451},  {56815, 41213}};
+        symbol_t f_symbols[8] = {
+            {.data = f_symbols_data[0]}, {.data = f_symbols_data[1]},
+            {.data = f_symbols_data[2]}, {.data = f_symbols_data[3]},
+            {.data = f_symbols_data[4]}, {.data = f_symbols_data[5]},
+            {.data = f_symbols_data[6]}, {.data = f_symbols_data[7]}};
+        symbol_t res_symbols[8] = {
             {.data = res_symbols_data[0]}, {.data = res_symbols_data[1]},
             {.data = res_symbols_data[2]}, {.data = res_symbols_data[3]},
             {.data = res_symbols_data[4]}, {.data = res_symbols_data[5]},
-            {.data = res_symbols_data[6]}, {.data = res_symbols_data[7]},
-            {.data = res_symbols_data[8]}};
-        symbol_seq_t f = {.symbol_size = 2, .length = 15, .symbols = f_symbols};
+            {.data = res_symbols_data[6]}, {.data = res_symbols_data[7]}};
+        symbol_seq_t f = {.symbol_size = 2, .length = 8, .symbols = f_symbols};
         symbol_seq_t res = {
-            .symbol_size = 2, .length = 9, .symbols = res_symbols};
-        uint16_t positions[15] = {20188, 33100, 14709, 32299, 21164,
-                                  5933,  1056,  2421,  29668, 21124,
-                                  28821, 15987, 21278, 4071,  13225};
+            .symbol_size = 2, .length = 8, .symbols = res_symbols};
+        uint16_t positions[8] = {56605, 28232, 15207, 33617,
+                                 44423, 26975, 22610, 19572};
 
         TEST_WRAPPER(fft, f, positions, res);
     }
 
     // Test 3
     {
-        element_t f_symbols_data[8][3] = {
-            {6985, 38161, 34050},  {24420, 64304, 640},   {45377, 5781, 5813},
-            {63411, 30776, 22735}, {37687, 24817, 35692}, {63819, 37912, 23768},
-            {39888, 27907, 16983}, {63813, 27111, 3673}};
-        element_t res_symbols_data[6][3] = {
-            {2614, 61569, 21058}, {50205, 19106, 32252}, {41922, 12561, 7107},
-            {37877, 41336, 1929}, {42499, 47538, 47062}, {1398, 34219, 37667}};
-        symbol_t f_symbols[8] = {
+        element_t f_symbols_data[10][3] = {
+            {7390, 16992, 41253},  {55840, 5814, 62251},  {44507, 25711, 58349},
+            {7717, 7568, 35910},   {13016, 23186, 63451}, {26949, 880, 58533},
+            {37688, 63842, 59228}, {29513, 36129, 39709}, {32650, 26669, 26130},
+            {63060, 43722, 6065}};
+        element_t res_symbols_data[10][3] = {
+            {18226, 49775, 9017}, {47713, 41824, 23832}, {54454, 65085, 13045},
+            {5290, 10467, 13189}, {32767, 34007, 9781},  {60042, 59039, 32428},
+            {23244, 4359, 47772}, {8867, 42123, 41805},  {49305, 13080, 1584},
+            {4349, 51548, 45905}};
+        symbol_t f_symbols[10] = {
             {.data = f_symbols_data[0]}, {.data = f_symbols_data[1]},
             {.data = f_symbols_data[2]}, {.data = f_symbols_data[3]},
             {.data = f_symbols_data[4]}, {.data = f_symbols_data[5]},
-            {.data = f_symbols_data[6]}, {.data = f_symbols_data[7]}};
-        symbol_t res_symbols[6] = {
+            {.data = f_symbols_data[6]}, {.data = f_symbols_data[7]},
+            {.data = f_symbols_data[8]}, {.data = f_symbols_data[9]}};
+        symbol_t res_symbols[10] = {
             {.data = res_symbols_data[0]}, {.data = res_symbols_data[1]},
             {.data = res_symbols_data[2]}, {.data = res_symbols_data[3]},
-            {.data = res_symbols_data[4]}, {.data = res_symbols_data[5]}};
-        symbol_seq_t f = {.symbol_size = 3, .length = 8, .symbols = f_symbols};
+            {.data = res_symbols_data[4]}, {.data = res_symbols_data[5]},
+            {.data = res_symbols_data[6]}, {.data = res_symbols_data[7]},
+            {.data = res_symbols_data[8]}, {.data = res_symbols_data[9]}};
+        symbol_seq_t f = {.symbol_size = 3, .length = 10, .symbols = f_symbols};
         symbol_seq_t res = {
-            .symbol_size = 3, .length = 6, .symbols = res_symbols};
-        uint16_t positions[8] = {56290, 25198, 60664, 12498,
-                                 17443, 57847, 5918,  8521};
+            .symbol_size = 3, .length = 10, .symbols = res_symbols};
+        uint16_t positions[10] = {26757, 33761, 16356, 44934, 12891,
+                                  1536,  58733, 745,   49191, 55606};
 
         TEST_WRAPPER(fft, f, positions, res);
     }

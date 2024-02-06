@@ -8,6 +8,7 @@
  */
 
 #include <assert.h>
+#include <string.h>
 
 #include <reed_solomon.h>
 
@@ -20,6 +21,10 @@ void rs_init(RS_t *rs, GF_t *gf, CC_t *cc, FFT_t *fft) {
     rs->gf = gf;
     rs->cc = cc;
     rs->fft = fft;
+}
+
+void rs_free(RS_t *rs) {
+    // Nothing
 }
 
 _static void _rs_get_coset_locator_poly(const RS_t *rs, coset_t coset,
@@ -41,7 +46,7 @@ _static void _rs_get_coset_locator_poly(const RS_t *rs, coset_t coset,
             coset_locator_poly[i] ^= gf_mul_ee(gf, coset_locator_poly[i - 1],
                                                pow_table[cur_coset_elem]);
         }
-        cur_coset_elem = (cur_coset_elem << 1) % N;
+        cur_coset_elem = NEXT_COSET_ELEMENT(cur_coset_elem);
     }
 
     assert(cur_coset_elem == coset.leader);
@@ -74,33 +79,26 @@ _static void _rs_get_rep_symbols_locator_poly(const RS_t *rs, uint16_t r,
 
     element_t coset_locator_poly[RS_COSET_LOCATOR_MAX_LEN];
     uint16_t d; // Locator polynomial degree
-    uint16_t i = 0;
 
     // Locator polynomial initialization.
     d = 0;
+    memset(locator_poly, 0, (r + 1) * sizeof(element_t));
     locator_poly[0] = 1;
-    for (i = 1; i <= r; ++i) {
-        locator_poly[i] = 0;
-    }
 
     for (uint16_t coset_idx = 0; coset_idx < rep_cosets_cnt; ++coset_idx) {
         _rs_get_coset_locator_poly(rs, rep_cosets[coset_idx],
                                    coset_locator_poly,
                                    RS_COSET_LOCATOR_MAX_LEN);
 
-        i = d;
-        while (1) {
+        for (uint16_t i = d; ; --i) {
             if (locator_poly[i] == 1) {
-                for (uint16_t j = 0; j <= rep_cosets[coset_idx].size; ++j) {
+                for (uint16_t j = 1; j <= rep_cosets[coset_idx].size; ++j) {
                     locator_poly[i + j] ^= coset_locator_poly[j];
                 }
             }
-            assert(locator_poly[i] == 0);
 
             if (i == 0) {
                 break;
-            } else {
-                --i;
             }
         }
 
@@ -140,7 +138,6 @@ _static void _rs_get_enc_forney_coefs(const RS_t *rs, uint16_t r,
             if (locator_poly[j + 1] == 0) {
                 continue;
             }
-            assert(locator_poly[j + 1] == 1);
 
             q ^= pow_table[(j * (N - pos)) % N];
         }
@@ -224,13 +221,14 @@ int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
     assert(inf_symbols.length + rep_symbols.length <= N);
 
     CC_t *cc = rs->cc;
-    int ret;
+    int ret = 0;
+    size_t symbol_size = inf_symbols.symbol_size;
     uint16_t k = inf_symbols.length;
     uint16_t r = rep_symbols.length;
-    uint16_t inf_max_cnt;
-    uint16_t rep_max_cnt;
-    uint16_t inf_cosets_cnt;
-    uint16_t rep_cosets_cnt;
+    uint16_t inf_max_cnt = 0;
+    uint16_t rep_max_cnt = 0;
+    uint16_t inf_cosets_cnt = 0;
+    uint16_t rep_cosets_cnt = 0;
     coset_t *inf_cosets;
     coset_t *rep_cosets;
     uint16_t *inf_positions;
@@ -247,7 +245,7 @@ int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
         return 1;
     }
 
-    rep_cosets = (coset_t *)malloc(rep_cosets_cnt * sizeof(coset_t));
+    rep_cosets = (coset_t *)malloc(rep_max_cnt * sizeof(coset_t));
     if (!rep_cosets) {
         free(inf_cosets);
         return 1;
@@ -287,7 +285,7 @@ int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
         return 1;
     }
 
-    ret = seq_alloc(SYMBOL_SIZE, r, &syndrome_poly);
+    ret = seq_alloc(symbol_size, r, &syndrome_poly);
     if (ret) {
         free(forney_coefs);
         free(locator_poly);
@@ -298,7 +296,7 @@ int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
         return ret;
     }
 
-    ret = seq_alloc(SYMBOL_SIZE, r, &evaluator_poly);
+    ret = seq_alloc(symbol_size, r, &evaluator_poly);
     if (ret) {
         seq_free(&syndrome_poly);
         free(forney_coefs);

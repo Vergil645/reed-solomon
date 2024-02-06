@@ -181,6 +181,29 @@ int main(void) {
                      rep_cosets_cnt);
     }
 
+    // Test 4
+    {
+        uint16_t k = 22;
+        uint16_t r = 17;
+        uint16_t inf_cosets_cnt = 4;
+        uint16_t rep_cosets_cnt = 4;
+        coset_t inf_cosets[] = {
+            {.leader = 771, .size = 8},
+            {.leader = 1285, .size = 8},
+            {.leader = 30583, .size = 4},
+            {.leader = 21845, .size = 2},
+        };
+        coset_t rep_cosets[] = {
+            {.leader = 257, .size = 8},
+            {.leader = 4369, .size = 4},
+            {.leader = 13107, .size = 4},
+            {.leader = 0, .size = 1},
+        };
+
+        TEST_WRAPPER(cc, k, r, inf_cosets, inf_cosets_cnt, rep_cosets,
+                     rep_cosets_cnt);
+    }
+
     cc_free(cc);
 
     return 0;
