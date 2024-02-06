@@ -26,6 +26,10 @@ add_library(rs STATIC
     "${LIBRS_SOURCES}/symbol.c"
     "${LIBRS_SOURCES}/seq.c")
 
+add_executable(compare_op "${SOURCES}/compare_op.c")
+target_compile_options(compare_op PUBLIC -mavx)
+target_link_libraries(compare_op rs)
+
 # ===================
 # ===== TESTING =====
 # ===================
