@@ -88,7 +88,7 @@ _static void _rs_get_rep_symbols_locator_poly(const RS_t *rs, uint16_t r,
 
     // Locator polynomial initialization.
     d = 0;
-    memset(locator_poly, 0, (r + 1) * sizeof(element_t));
+    memset((void *)locator_poly, 0, (r + 1) * sizeof(element_t));
     locator_poly[0] = 1;
 
     for (uint16_t coset_idx = 0; coset_idx < rep_cosets_cnt; ++coset_idx) {
@@ -175,10 +175,8 @@ _static void _rs_get_evaluator_poly(const RS_t *rs, symbol_seq_t syndrome_poly,
 
     // Evaluator polynomial initialization.
     for (uint16_t i = 0; i < r; ++i) {
-        // TODO: memset
-        for (size_t e_idx = 0; e_idx < symbol_size; ++e_idx) {
-            evaluator_poly.symbols[i].data[e_idx] = 0;
-        }
+        memset((void *)evaluator_poly.symbols[i].data, 0,
+               symbol_size * sizeof(element_t));
     }
 
     for (uint16_t i = 0; i < r; ++i) {
@@ -260,7 +258,7 @@ _static void _rs_restore_erased(const RS_t *rs, const element_t *locator_poly,
         pos = positions[erased_id];
         coef = _rs_get_forney_coef(rs, locator_poly, t, pos);
 
-        memset(rcv_symbols.symbols[erased_id].data, 0,
+        memset((void *)rcv_symbols.symbols[erased_id].data, 0,
                symbol_size * sizeof(element_t));
 
         j = (N - pos) % N;

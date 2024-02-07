@@ -34,7 +34,7 @@ static int test(const RS_t *rs, uint16_t k, uint16_t r,
     }
 
     for (uint16_t erasure_idx = 0; erasure_idx < t; ++erasure_idx) {
-        memset(_rcv_symbols.symbols[erased_indices[erasure_idx]].data, 0,
+        memset((void *)_rcv_symbols.symbols[erased_indices[erasure_idx]].data, 0,
                _rcv_symbols.symbol_size * sizeof(element_t));
     }
 

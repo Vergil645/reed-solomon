@@ -8,6 +8,7 @@
  */
 
 #include <assert.h>
+#include <string.h>
 
 #include <fft.h>
 
@@ -34,10 +35,7 @@ void fft_transform(const FFT_t *fft, symbol_seq_t f, const uint16_t *positions,
 
     for (uint16_t j = 0; j < res.length; ++j) {
         // Initialization
-        // TODO: memset
-        for (size_t e_idx = 0; e_idx < symbol_size; ++e_idx) {
-            res.symbols[j].data[e_idx] = 0;
-        }
+        memset((void *)res.symbols[j].data, 0, symbol_size * sizeof(element_t));
 
         for (uint16_t i = 0; i < f.length; ++i) {
             c = pow_table[(positions[i] * j) % N];
@@ -63,10 +61,8 @@ void fft_partial_transform(const FFT_t *fft, symbol_seq_t f, symbol_seq_t res,
 
     for (uint16_t res_idx = 0; res_idx < res.length; ++res_idx) {
         // Initialization
-        // TODO: memset
-        for (size_t e_idx = 0; e_idx < symbol_size; ++e_idx) {
-            res.symbols[res_idx].data[e_idx] = 0;
-        }
+        memset((void *)res.symbols[res_idx].data, 0,
+               symbol_size * sizeof(element_t));
 
         j = (N - components[res_idx]) % N;
 

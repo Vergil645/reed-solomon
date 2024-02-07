@@ -97,7 +97,7 @@ int cc_init(CC_t *cc) {
     if (!processed) {
         return 1;
     }
-    memset(processed, false, N * sizeof(bool));
+    memset((void *)processed, 0, N * sizeof(bool));
 
     for (uint16_t s = 0; s < N; ++s) {
         if (processed[s]) {
