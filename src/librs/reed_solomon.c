@@ -27,9 +27,21 @@ void rs_free(RS_t *rs) {
     // Nothing
 }
 
-_static void _rs_get_coset_locator_poly(const RS_t *rs, coset_t coset,
-                                        element_t *coset_locator_poly,
-                                        uint16_t coset_locator_max_len) {
+_static __always_inline void _rs_get_syndrome_poly(const RS_t *rs,
+                                                   symbol_seq_t seq,
+                                                   const uint16_t *positions,
+                                                   symbol_seq_t syndrome_poly) {
+    assert(rs != NULL);
+    assert(positions != NULL);
+    assert(seq.symbol_size == syndrome_poly.symbol_size);
+
+    fft_transform(rs->fft, seq, positions, syndrome_poly);
+}
+
+_static __always_inline void
+_rs_get_coset_locator_poly(const RS_t *rs, coset_t coset,
+                           element_t *coset_locator_poly,
+                           uint16_t coset_locator_max_len) {
     assert(rs != NULL);
     assert(coset_locator_poly != NULL);
     assert(coset.size + 1 <= coset_locator_max_len);
@@ -59,11 +71,10 @@ _static void _rs_get_coset_locator_poly(const RS_t *rs, coset_t coset,
 #endif
 }
 
-_static void _rs_get_rep_symbols_locator_poly(const RS_t *rs, uint16_t r,
-                                              const coset_t *rep_cosets,
-                                              uint16_t rep_cosets_cnt,
-                                              element_t *locator_poly,
-                                              uint16_t locator_max_len) {
+_static __always_inline void _rs_get_rep_symbols_locator_poly(
+    const RS_t *rs, uint16_t r, const coset_t *rep_cosets,
+    uint16_t rep_cosets_cnt, element_t *locator_poly,
+    uint16_t locator_max_len) {
     assert(rs != NULL);
     assert(rep_cosets != NULL);
     assert(locator_poly != NULL);
@@ -90,7 +101,7 @@ _static void _rs_get_rep_symbols_locator_poly(const RS_t *rs, uint16_t r,
                                    coset_locator_poly,
                                    RS_COSET_LOCATOR_MAX_LEN);
 
-        for (uint16_t i = d; ; --i) {
+        for (uint16_t i = d;; --i) {
             if (locator_poly[i] == 1) {
                 for (uint16_t j = 1; j <= rep_cosets[coset_idx].size; ++j) {
                     locator_poly[i + j] ^= coset_locator_poly[j];
@@ -115,49 +126,31 @@ _static void _rs_get_rep_symbols_locator_poly(const RS_t *rs, uint16_t r,
 #endif
 }
 
-_static void _rs_get_enc_forney_coefs(const RS_t *rs, uint16_t r,
-                                      const element_t *locator_poly,
-                                      const uint16_t *rep_positions,
-                                      element_t *forney_coefs) {
+_static __always_inline element_t _rs_get_rep_forney_coef(
+    const RS_t *rs, const element_t *locator_poly, uint16_t r, uint16_t pos) {
     assert(rs != NULL);
     assert(locator_poly != NULL);
-    assert(rep_positions != NULL);
 
     GF_t *gf = rs->gf;
     element_t *pow_table = gf->pow_table;
-    uint16_t pos;
     element_t p; // divisible element = alpha^{position}
     element_t q; // divisor = locator_poly'(alpha^{-position})
 
-    for (uint16_t i = 0; i < r; ++i) {
-        pos = rep_positions[i];
-
-        p = pow_table[pos];
-        q = 0;
-        for (uint16_t j = 0; j < r; j += 2) {
-            if (locator_poly[j + 1] == 0) {
-                continue;
-            }
-
-            q ^= pow_table[(j * (N - pos)) % N];
+    p = pow_table[pos];
+    q = 0;
+    for (uint16_t j = 0; j < r; j += 2) {
+        if (locator_poly[j + 1] == 0) {
+            continue;
         }
+        assert(locator_poly[j + 1] == 1);
 
-        forney_coefs[i] = gf_div_ee(gf, p, q);
+        q ^= pow_table[(j * (N - pos)) % N];
     }
+
+    return gf_div_ee(gf, p, q);
 }
 
-_static void _rs_get_inf_symbols_syndrome_poly(const RS_t *rs,
-                                               symbol_seq_t inf_symbols,
-                                               const uint16_t *inf_positions,
-                                               symbol_seq_t syndrome_poly) {
-    assert(rs != NULL);
-    assert(inf_positions != NULL);
-    assert(inf_symbols.symbol_size == syndrome_poly.symbol_size);
-
-    fft_transform(rs->fft, inf_symbols, inf_positions, syndrome_poly);
-}
-
-_static void _rs_get_repair_symbols_evaluator_poly(
+_static __always_inline void _rs_get_repair_symbols_evaluator_poly(
     const RS_t *rs, symbol_seq_t syndrome_poly, const element_t *locator_poly,
     symbol_seq_t evaluator_poly) {
     assert(rs != NULL);
@@ -187,26 +180,26 @@ _static void _rs_get_repair_symbols_evaluator_poly(
     }
 }
 
-_static void _rs_get_repair_symbols(const RS_t *rs,
-                                    const element_t *forney_coefs,
-                                    symbol_seq_t evaluator_poly,
-                                    symbol_seq_t rep_symbols,
-                                    const uint16_t *rep_positions) {
+_static __always_inline void
+_rs_get_repair_symbols(const RS_t *rs, const element_t *locator_poly,
+                       symbol_seq_t evaluator_poly, symbol_seq_t rep_symbols,
+                       const uint16_t *rep_positions) {
     assert(rs != NULL);
-    assert(forney_coefs != NULL);
     assert(rep_positions != NULL);
     assert(evaluator_poly.symbol_size == rep_symbols.symbol_size);
 
     GF_t *gf = rs->gf;
     size_t symbol_size = evaluator_poly.symbol_size;
+    uint16_t r = rep_symbols.length;
+    uint16_t pos;
     element_t coef;
 
-    fft_partial_transform(rs->fft, evaluator_poly, rep_symbols,
-                            rep_positions);
+    fft_partial_transform(rs->fft, evaluator_poly, rep_symbols, rep_positions);
 
     // TODO: implement deffered Forney scalling
-    for (uint16_t i = 0; i < rep_symbols.length; ++i) {
-        coef = forney_coefs[i];
+    for (uint16_t i = 0; i < r; ++i) {
+        pos = rep_positions[i];
+        coef = _rs_get_rep_forney_coef(rs, locator_poly, r, pos);
 
         for (size_t e_idx = 0; e_idx < symbol_size; ++e_idx) {
             rep_symbols.symbols[i].data[e_idx] =
@@ -234,7 +227,6 @@ int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
     uint16_t *inf_positions;
     uint16_t *rep_positions;
     element_t *locator_poly;
-    element_t *forney_coefs;
     symbol_seq_t syndrome_poly;
     symbol_seq_t evaluator_poly;
 
@@ -275,19 +267,8 @@ int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
         return 1;
     }
 
-    forney_coefs = (element_t *)malloc(r * sizeof(element_t));
-    if (!forney_coefs) {
-        free(locator_poly);
-        free(rep_positions);
-        free(inf_positions);
-        free(rep_cosets);
-        free(inf_cosets);
-        return 1;
-    }
-
     ret = seq_alloc(symbol_size, r, &syndrome_poly);
     if (ret) {
-        free(forney_coefs);
         free(locator_poly);
         free(rep_positions);
         free(inf_positions);
@@ -299,7 +280,6 @@ int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
     ret = seq_alloc(symbol_size, r, &evaluator_poly);
     if (ret) {
         seq_free(&syndrome_poly);
-        free(forney_coefs);
         free(locator_poly);
         free(rep_positions);
         free(inf_positions);
@@ -314,23 +294,19 @@ int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
     cc_cosets_to_positions(inf_cosets, inf_cosets_cnt, inf_positions, k);
     cc_cosets_to_positions(rep_cosets, rep_cosets_cnt, rep_positions, r);
 
+    _rs_get_syndrome_poly(rs, inf_symbols, inf_positions, syndrome_poly);
+
     _rs_get_rep_symbols_locator_poly(rs, r, rep_cosets, rep_cosets_cnt,
                                      locator_poly, r + 1);
-
-    _rs_get_enc_forney_coefs(rs, r, locator_poly, rep_positions, forney_coefs);
-
-    _rs_get_inf_symbols_syndrome_poly(rs, inf_symbols, inf_positions,
-                                      syndrome_poly);
 
     _rs_get_repair_symbols_evaluator_poly(rs, syndrome_poly, locator_poly,
                                           evaluator_poly);
 
-    _rs_get_repair_symbols(rs, forney_coefs, evaluator_poly, rep_symbols,
+    _rs_get_repair_symbols(rs, locator_poly, evaluator_poly, rep_symbols,
                            rep_positions);
 
     seq_free(&evaluator_poly);
     seq_free(&syndrome_poly);
-    free(forney_coefs);
     free(locator_poly);
     free(rep_positions);
     free(inf_positions);

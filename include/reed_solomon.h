@@ -76,6 +76,18 @@ int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
 #ifndef NDEBUG
 
 /**
+ * @brief Compute syndrome polynomial.
+ *
+ * @param rs context object.
+ * @param seq symbol sequence.
+ * @param positions symbol positions.
+ * @param syndrome_poly where to place the result.
+ */
+void _rs_get_syndrome_poly(const RS_t *rs, symbol_seq_t seq,
+                           const uint16_t *positions,
+                           symbol_seq_t syndrome_poly);
+
+/**
  * @brief Compute cyclotomic coset locator polynomial.
  * @details All locator polynomial coefficients will belongs to GF(2) subfield
  * ({0, 1}) of GF(65536). Locator polynomial will have degree equal to coset
@@ -110,33 +122,20 @@ void _rs_get_rep_symbols_locator_poly(const RS_t *rs, uint16_t r,
                                       uint16_t locator_max_len);
 
 /**
- * @brief Calculate encoding Forney coefficients.
+ * @brief Compute Forney coefficient for given repair symbol postion.
+ * @details Use the fact that locator polynomial has coefficients from GF(2).
  *
  * @param rs context object.
- * @param r number of repair symbols.
- * @param locator_poly repair symbols locator polynomial (binary).
- * @param rep_positions repair symbol positions.
- * @param forney_coefs where to place the result.
+ * @param locator_poly locator polynomial.
+ * @param r degree of locator polynomial (number of repair symbols).
+ * @param pos repair symbol position.
+ * @return Forney coefficient.
  */
-void _rs_get_enc_forney_coefs(const RS_t *rs, uint16_t r,
-                              const element_t *locator_poly,
-                              const uint16_t *rep_positions,
-                              element_t *forney_coefs);
+element_t _rs_get_rep_forney_coef(const RS_t *rs, const element_t *locator_poly,
+                                  uint16_t r, uint16_t pos);
 
 /**
- * @brief Calculate information symbols syndrome polynomial.
- *
- * @param rs context object.
- * @param inf_symbols information symbols.
- * @param inf_positions information symbol positions.
- * @param syndrome_poly where to place the result.
- */
-void _rs_get_inf_symbols_syndrome_poly(const RS_t *rs, symbol_seq_t inf_symbols,
-                                       const uint16_t *inf_positions,
-                                       symbol_seq_t syndrome_poly);
-
-/**
- * @brief Calculate repair symbols evaluator polynomial modulo r (number of
+ * @brief Compute repair symbols evaluator polynomial modulo r (number of
  * repair symbols).
  *
  * @param rs context object.
@@ -150,15 +149,15 @@ void _rs_get_repair_symbols_evaluator_poly(const RS_t *rs,
                                            symbol_seq_t evaluator_poly);
 
 /**
- * @brief Calculate repair symbols.
+ * @brief Compute repair symbols.
  *
  * @param rs context object.
- * @param forney_coefs Forney coefficients.
+ * @param locator_poly repair symbols locator polynomial.
  * @param evaluator_poly repair symbols evaluator polynomial.
  * @param rep_symbols where to place the result.
  * @param rep_positions repair symbol positions.
  */
-void _rs_get_repair_symbols(const RS_t *rs, const element_t *forney_coefs,
+void _rs_get_repair_symbols(const RS_t *rs, const element_t *locator_poly,
                             symbol_seq_t evaluator_poly,
                             symbol_seq_t rep_symbols,
                             const uint16_t *rep_positions);

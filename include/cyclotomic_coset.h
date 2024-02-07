@@ -185,7 +185,7 @@ void cc_cosets_to_positions(const coset_t *cosets, uint16_t cosets_cnt,
 #ifndef NDEBUG
 
 /**
- * @brief Calculate a number of cyclotomic cosets the union of which has a given
+ * @brief Compute a number of cyclotomic cosets the union of which has a given
  * size.
  *
  * @param r union size.

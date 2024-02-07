@@ -75,7 +75,7 @@ void fft_transform(const FFT_t *fft, symbol_seq_t f, const uint16_t *positions,
  * @param f sequence coefficients.
  * @param res where to place the result.
  * @param components negative components of the discrete Fourier transform to be
- * calculated.
+ * computed.
  */
 void fft_partial_transform(const FFT_t *fft, symbol_seq_t f, symbol_seq_t res,
                            const uint16_t *components);
