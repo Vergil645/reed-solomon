@@ -25,6 +25,12 @@
 #define RS_COSET_LOCATOR_MAX_LEN 17
 
 /**
+ * @brief Return code for cases when erases cannot be restored due to code
+ * parameters.
+ */
+#define RS_ERR_CANNOT_RESTORE 100
+
+/**
  * @brief Context data.
  */
 typedef struct RS {
@@ -71,6 +77,23 @@ void rs_free(RS_t *rs);
 int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
                                symbol_seq_t rep_symbols);
 
+/**
+ * @brief Restore erased symbols. Assume that rcv_symbols[i] = 0 for erased i.
+ *
+ * @param rs context object.
+ * @param k number of information symbols.
+ * @param r number of repair symbols.
+ * @param rcv_symbols received symbols, restored symbols will be written here.
+ * @param erased_indices indices of erased symbols in rcv_symbols.
+ * @param t number of erases.
+ * @return 0 on success,\n
+ *         1 on memory allocation error,\n
+ *         or RS_ERR_CANNOT_RESTORE.
+ */
+int rs_restore_symbols(const RS_t *rs, uint16_t k, uint16_t r,
+                       symbol_seq_t rcv_symbols, const uint16_t *erased_indices,
+                       uint16_t t);
+
 // Internal functions not for public use.
 // Defined here only in Debug mode in order to test them.
 #ifndef NDEBUG
@@ -88,19 +111,17 @@ void _rs_get_syndrome_poly(const RS_t *rs, symbol_seq_t seq,
                            symbol_seq_t syndrome_poly);
 
 /**
- * @brief Compute cyclotomic coset locator polynomial.
- * @details All locator polynomial coefficients will belongs to GF(2) subfield
- * ({0, 1}) of GF(65536). Locator polynomial will have degree equal to coset
- * size.
+ * @brief Compute locator polynomial.
  *
  * @param rs context object.
- * @param coset cyclotomic coset.
- * @param coset_locator_poly where to place locator polynomial coefficients.
- * @param coset_locator_max_len max number of locator polynomial coefficients.
+ * @param positions positions.
+ * @param positions_cnt number of positions.
+ * @param locator_poly where to place locator polynomial coefficients.
+ * @param locator_max_len max number of locator polynomial coefficients.
  */
-void _rs_get_coset_locator_poly(const RS_t *rs, coset_t coset,
-                                element_t *coset_locator_poly,
-                                uint16_t coset_locator_max_len);
+void _rs_get_locator_poly(const RS_t *rs, const uint16_t *positions,
+                          uint16_t positions_cnt, element_t *locator_poly,
+                          uint16_t locator_max_len);
 
 /**
  * @brief Compute repair symbols locator polynomial.
@@ -122,31 +143,29 @@ void _rs_get_rep_symbols_locator_poly(const RS_t *rs, uint16_t r,
                                       uint16_t locator_max_len);
 
 /**
- * @brief Compute Forney coefficient for given repair symbol postion.
- * @details Use the fact that locator polynomial has coefficients from GF(2).
+ * @brief Compute Forney coefficient for given symbol postion.
  *
  * @param rs context object.
  * @param locator_poly locator polynomial.
- * @param r degree of locator polynomial (number of repair symbols).
- * @param pos repair symbol position.
+ * @param d degree of locator polynomial (number of repair symbols or erasures).
+ * @param pos symbol position.
  * @return Forney coefficient.
  */
-element_t _rs_get_rep_forney_coef(const RS_t *rs, const element_t *locator_poly,
-                                  uint16_t r, uint16_t pos);
+element_t _rs_get_forney_coef(const RS_t *rs, const element_t *locator_poly,
+                              uint16_t d, uint16_t pos);
 
 /**
- * @brief Compute repair symbols evaluator polynomial modulo r (number of
- * repair symbols).
+ * @brief Compute evaluator polynomial modulo x^t (t - number of repair symbols
+ * or erasures).
  *
  * @param rs context object.
- * @param syndrome_poly information symbols syndrome polynomial (deg == r - 1).
- * @param locator_poly repair symbols locator polynomial (binary, deg == r).
+ * @param syndrome_poly information symbols syndrome polynomial (deg == t - 1).
+ * @param locator_poly repair symbols locator polynomial (deg == t).
  * @param evaluator_poly where to place the result.
  */
-void _rs_get_repair_symbols_evaluator_poly(const RS_t *rs,
-                                           symbol_seq_t syndrome_poly,
-                                           const element_t *locator_poly,
-                                           symbol_seq_t evaluator_poly);
+void _rs_get_evaluator_poly(const RS_t *rs, symbol_seq_t syndrome_poly,
+                            const element_t *locator_poly,
+                            symbol_seq_t evaluator_poly);
 
 /**
  * @brief Compute repair symbols.
@@ -161,6 +180,21 @@ void _rs_get_repair_symbols(const RS_t *rs, const element_t *locator_poly,
                             symbol_seq_t evaluator_poly,
                             symbol_seq_t rep_symbols,
                             const uint16_t *rep_positions);
+
+/**
+ * @brief Restore erased symbols if it is possible.
+ *
+ * @param rs context object.
+ * @param locator_poly erased symbols locator polynomial.
+ * @param evaluator_poly erased symbols evaluator polynomial.
+ * @param positions positions of all symbols.
+ * @param rcv_symbols received symbols, restored symbols will be written here.
+ * @param erased_indices indices of erased symbols in rcv_symbols.
+ */
+void _rs_restore_erased(const RS_t *rs, const element_t *locator_poly,
+                        symbol_seq_t evaluator_poly, const uint16_t *positions,
+                        symbol_seq_t rcv_symbols,
+                        const uint16_t *erased_indices);
 
 #endif
 
