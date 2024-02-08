@@ -2,7 +2,6 @@
  * @file compare_op.c
  * @author Matvey Kolesov (kolesov645@gmail.com)
  * @brief Compares complexity of "+" and "*" operations in field GF(65536).
- * @version 0.1
  * @date 2024-02-07
  *
  * @copyright Copyright (c) 2024

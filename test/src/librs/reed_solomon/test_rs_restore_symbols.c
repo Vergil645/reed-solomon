@@ -5,9 +5,9 @@
 
 #include <util.h>
 
-#define TEST_WRAPPER(_rs, _k, _r, _rcv_symbols, _erased_indices, _t)           \
+#define TEST_WRAPPER(_rs, _k, _r, _src_symbols, _erased_indices, _t)           \
     do {                                                                       \
-        if (test((_rs), (_k), (_r), (_rcv_symbols), (_erased_indices),         \
+        if (test((_rs), (_k), (_r), (_src_symbols), (_erased_indices),         \
                  (_t))) {                                                      \
             free_all((_rs));                                                   \
             return 1;                                                          \
@@ -15,46 +15,45 @@
     } while (0)
 
 static int test(const RS_t *rs, uint16_t k, uint16_t r,
-                symbol_seq_t rcv_symbols, const uint16_t *erased_indices,
+                symbol_seq_t src_symbols, const uint16_t *erased_indices,
                 uint16_t t) {
-    symbol_seq_t _rcv_symbols;
+    symbol_seq_t rcv_symbols;
     int ret;
 
-    ret = seq_alloc(rcv_symbols.symbol_size, rcv_symbols.length, &_rcv_symbols);
+    ret = seq_alloc(src_symbols.symbol_size, src_symbols.length, &rcv_symbols);
     if (ret) {
         printf("ERROR: seq_alloc returned %d\n", ret);
         return ret;
     }
 
-    for (uint16_t i = 0; i < rcv_symbols.length; ++i) {
-        for (size_t e_idx = 0; e_idx < rcv_symbols.symbol_size; ++e_idx) {
-            _rcv_symbols.symbols[i].data[e_idx] =
-                rcv_symbols.symbols[i].data[e_idx];
-        }
+    for (uint16_t i = 0; i < src_symbols.length; ++i) {
+        memcpy((void *)rcv_symbols.symbols[i].data,
+               (void *)src_symbols.symbols[i].data,
+               src_symbols.symbol_size * sizeof(element_t));
     }
 
-    for (uint16_t erasure_idx = 0; erasure_idx < t; ++erasure_idx) {
-        memset((void *)_rcv_symbols.symbols[erased_indices[erasure_idx]].data, 0,
-               _rcv_symbols.symbol_size * sizeof(element_t));
+    for (uint16_t i = 0; i < t; ++i) {
+        memset((void *)rcv_symbols.symbols[erased_indices[i]].data, 0,
+               rcv_symbols.symbol_size * sizeof(element_t));
     }
 
-    rs_restore_symbols(rs, k, r, _rcv_symbols, erased_indices, t);
+    rs_restore_symbols(rs, k, r, rcv_symbols, erased_indices, t);
 
-    if (!util_seq_eq(_rcv_symbols, rcv_symbols)) {
+    if (!util_seq_eq(rcv_symbols, src_symbols)) {
         printf("ERROR: rs_restore_symbols(...): incorrect rcv_symbols:\n");
 
         printf("\tcorrect = ");
-        util_seq_printf(rcv_symbols);
+        util_seq_printf(src_symbols);
         printf("\n");
 
         printf("\tactual  = ");
-        util_seq_printf(_rcv_symbols);
+        util_seq_printf(rcv_symbols);
         printf("\n");
 
         ret = 1;
     }
 
-    seq_free(&_rcv_symbols);
+    seq_free(&rcv_symbols);
 
     return ret;
 }

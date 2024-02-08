@@ -56,6 +56,11 @@ target_link_libraries(test_rs_generate_repair_symbols rs util)
 add_executable(test_rs_restore_symbols "${LIBRS_TEST_SOURCES}/reed_solomon/test_rs_restore_symbols.c")
 target_link_libraries(test_rs_restore_symbols rs util)
 
+# --- librs
+
+add_executable(test_random_data "${LIBRS_TEST_SOURCES}/test_random_data.c")
+target_link_libraries(test_random_data rs util)
+
 # =========================
 # ===== RUNNING TESTS =====
 # =========================
@@ -81,3 +86,7 @@ add_test(NAME test_fft_partial_transform COMMAND test_fft_partial_transform)
 
 add_test(NAME test_rs_generate_repair_symbols COMMAND test_rs_generate_repair_symbols)
 add_test(NAME test_rs_restore_symbols COMMAND test_rs_restore_symbols)
+
+# --- librs
+
+add_test(NAME test_random_data COMMAND test_random_data)
