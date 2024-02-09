@@ -64,13 +64,13 @@ static const uint16_t g_thresholds[CC_COSET_SIZES_CNT] = {[0] = CC_THRESHOLD_1,
                                                           [4] =
                                                               CC_THRESHOLD_16};
 
-int cc_alloc(CC_t *cc) {
+int cc_alloc(CC_t* cc) {
     assert(cc != NULL);
 
-    uint16_t **leaders = cc->leaders;
-    uint16_t *leaders_ptr;
+    uint16_t** leaders = cc->leaders;
+    uint16_t* leaders_ptr;
 
-    leaders_ptr = (uint16_t *)malloc(CC_COSETS_CNT * sizeof(uint16_t));
+    leaders_ptr = (uint16_t*)malloc(CC_COSETS_CNT * sizeof(uint16_t));
     if (!leaders_ptr) {
         return 1;
     }
@@ -83,21 +83,21 @@ int cc_alloc(CC_t *cc) {
     return 0;
 }
 
-int cc_init(CC_t *cc) {
+int cc_init(CC_t* cc) {
     assert(cc != NULL);
 
-    bool *processed;
-    uint16_t **leaders = cc->leaders;
+    bool* processed;
+    uint16_t** leaders = cc->leaders;
     uint16_t idx[CC_COSET_SIZES_CNT] = {0}; // idx[i] - index in leaders[1 << i]
     uint16_t coset_size;
     uint16_t cur_coset_elem;
     uint8_t i;
 
-    processed = (bool *)malloc(N * sizeof(bool));
+    processed = (bool*)malloc(N * sizeof(bool));
     if (!processed) {
         return 1;
     }
-    memset((void *)processed, 0, N * sizeof(bool));
+    memset((void*)processed, 0, N * sizeof(bool));
 
     for (uint16_t s = 0; s < N; ++s) {
         if (processed[s]) {
@@ -137,7 +137,7 @@ int cc_init(CC_t *cc) {
     return 0;
 }
 
-void cc_free(CC_t *cc) {
+void cc_free(CC_t* cc) {
     assert(cc != NULL);
 
     free(cc->leaders[0]); // see cc_init(...)
@@ -164,22 +164,22 @@ _static uint16_t _cc_get_cosets_cnt(uint16_t r) {
     return cosets_cnt;
 }
 
-void cc_estimate_cosets_cnt(uint16_t k, uint16_t r, uint16_t *inf_max_cnt,
-                            uint16_t *rep_max_cnt) {
+void cc_estimate_cosets_cnt(uint16_t k, uint16_t r, uint16_t* inf_max_cnt,
+                            uint16_t* rep_max_cnt) {
     *inf_max_cnt = _cc_get_cosets_cnt(k); // upper limit
     *rep_max_cnt = _cc_get_cosets_cnt(r); // accurate estimation
 }
 
-void cc_select_cosets(const CC_t *cc, uint16_t k, uint16_t r,
-                      coset_t *inf_cosets, uint16_t inf_max_cnt,
-                      uint16_t *inf_cosets_cnt, coset_t *rep_cosets,
-                      uint16_t rep_max_cnt, uint16_t *rep_cosets_cnt) {
+void cc_select_cosets(const CC_t* cc, uint16_t k, uint16_t r,
+                      coset_t* inf_cosets, uint16_t inf_max_cnt,
+                      uint16_t* inf_cosets_cnt, coset_t* rep_cosets,
+                      uint16_t rep_max_cnt, uint16_t* rep_cosets_cnt) {
     assert(cc != NULL);
     assert(k + r <= N);
     assert(inf_cosets != NULL);
     assert(rep_cosets != NULL);
 
-    uint16_t *const *leaders = cc->leaders;
+    uint16_t* const* leaders = cc->leaders;
     uint16_t idx[CC_COSET_SIZES_CNT] = {0}; // idx[i] - index in leaders[1 << i]
     uint16_t inf_thresholds[CC_COSET_SIZES_CNT] = {
         0}; // inf_threshold[i] - threshold for
@@ -232,8 +232,8 @@ void cc_select_cosets(const CC_t *cc, uint16_t k, uint16_t r,
     *inf_cosets_cnt = inf_idx;
 }
 
-void cc_cosets_to_positions(const coset_t *cosets, uint16_t cosets_cnt,
-                            uint16_t *positions, uint16_t positions_cnt) {
+void cc_cosets_to_positions(const coset_t* cosets, uint16_t cosets_cnt,
+                            uint16_t* positions, uint16_t positions_cnt) {
     assert(cosets != NULL);
     assert(positions != NULL);
 

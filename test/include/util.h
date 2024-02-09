@@ -26,7 +26,7 @@
  * @return 0 if arrays are not equal or one of them is NULL,\n
  *         1 otherwise.
  */
-int util_u16_array_eq(const uint16_t *a, size_t a_len, const uint16_t *b,
+int util_u16_array_eq(const uint16_t* a, size_t a_len, const uint16_t* b,
                       size_t b_len);
 
 /**
@@ -35,7 +35,7 @@ int util_u16_array_eq(const uint16_t *a, size_t a_len, const uint16_t *b,
  * @param a array.
  * @param a_len array length.
  */
-void util_u16_array_printf(const uint16_t *a, size_t a_len);
+void util_u16_array_printf(const uint16_t* a, size_t a_len);
 
 /**
  * @brief Check that two symbols are equal

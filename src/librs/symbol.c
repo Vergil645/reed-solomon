@@ -11,12 +11,12 @@
 
 #include "symbol.h"
 
-int symbol_alloc(size_t symbol_size, symbol_t *s) {
+int symbol_alloc(size_t symbol_size, symbol_t* s) {
     assert(s != NULL);
 
-    element_t *data;
+    element_t* data;
 
-    data = (element_t *)malloc(symbol_size * sizeof(element_t));
+    data = (element_t*)malloc(symbol_size * sizeof(element_t));
     if (!data) {
         return 1;
     }
@@ -26,7 +26,7 @@ int symbol_alloc(size_t symbol_size, symbol_t *s) {
     return 0;
 }
 
-void symbol_free(symbol_t *s) {
+void symbol_free(symbol_t* s) {
     assert(s != NULL);
 
     free(s->data);

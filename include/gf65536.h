@@ -45,13 +45,13 @@ typedef struct GF_t {
      * @brief Primitive element powers.
      * @details \f$pow\_table_i = \alpha^i\f$
      */
-    element_t *pow_table;
+    element_t* pow_table;
 
     /**
      * @brief Logarithm to the base of a primitive element.
      * @details \f$log\_table_e = d\f$ s.t. \f$\alpha^d = e\f$
      */
-    uint16_t *log_table;
+    uint16_t* log_table;
 } GF_t;
 
 /**
@@ -61,7 +61,7 @@ typedef struct GF_t {
  * @return 0 on success,\n
  *         1 on memory allocation error.
  */
-int gf_alloc(GF_t *gf);
+int gf_alloc(GF_t* gf);
 
 /**
  * @brief Make necessary for Galois field implementation pre-calculations.
@@ -71,14 +71,14 @@ int gf_alloc(GF_t *gf);
  *
  * @param gf Galois field data.
  */
-void gf_init(GF_t *gf);
+void gf_init(GF_t* gf);
 
 /**
  * @brief Deallocate Galois field data.
  *
  * @param gf Galois field data.
  */
-void gf_free(GF_t *gf);
+void gf_free(GF_t* gf);
 
 /**
  * @brief Compute multiplication of 2 elements in Galois field.
@@ -90,7 +90,7 @@ void gf_free(GF_t *gf);
  * @param b second multiplier.
  * @return multiplication result.
  */
-element_t gf_mul_ee(const GF_t *gf, element_t a, element_t b);
+element_t gf_mul_ee(const GF_t* gf, element_t a, element_t b);
 
 /**
  * @brief Compute quotient of 2 elements in Galois field.
@@ -102,6 +102,6 @@ element_t gf_mul_ee(const GF_t *gf, element_t a, element_t b);
  * @param b divisor.
  * @return division result.
  */
-element_t gf_div_ee(const GF_t *gf, element_t a, element_t b);
+element_t gf_div_ee(const GF_t* gf, element_t a, element_t b);
 
 #endif

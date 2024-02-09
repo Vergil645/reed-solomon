@@ -12,7 +12,7 @@
         }                                                                      \
     } while (0)
 
-static int test(const RS_t *rs, symbol_seq_t inf_symbols,
+static int test(const RS_t* rs, symbol_seq_t inf_symbols,
                 symbol_seq_t rep_symbols) {
     symbol_seq_t _rep_symbols;
     int ret;
@@ -45,10 +45,10 @@ static int test(const RS_t *rs, symbol_seq_t inf_symbols,
     return ret;
 }
 
-static void free_all(RS_t *rs) {
-    GF_t *gf = rs->gf;
-    CC_t *cc = rs->cc;
-    FFT_t *fft = rs->fft;
+static void free_all(RS_t* rs) {
+    GF_t* gf = rs->gf;
+    CC_t* cc = rs->cc;
+    FFT_t* fft = rs->fft;
 
     rs_free(rs);
     fft_free(fft);
@@ -61,12 +61,12 @@ int main(void) {
     CC_t _cc;
     FFT_t _fft;
     RS_t _rs;
-    RS_t *rs = &_rs;
+    RS_t* rs = &_rs;
 
     {
-        GF_t *gf = &_gf;
-        CC_t *cc = &_cc;
-        FFT_t *fft = &_fft;
+        GF_t* gf = &_gf;
+        CC_t* cc = &_cc;
+        FFT_t* fft = &_fft;
 
         int ret = 0;
 

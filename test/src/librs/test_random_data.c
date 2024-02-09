@@ -24,7 +24,8 @@ static void generate_src_symbols(symbol_seq_t src_symbols) {
 
     for (size_t i = 0; i < length; ++i) {
         for (size_t j = 0; j < symbol_size; ++j) {
-            src_symbols.symbols[i].data[j] = 1 + ((element_t)rand()) % UINT16_MAX;
+            src_symbols.symbols[i].data[j] =
+                1 + ((element_t)rand()) % UINT16_MAX;
 
             assert(src_symbols.symbols[i].data[j] != 0);
         }
@@ -40,14 +41,14 @@ static void init_rcv_symbols(symbol_seq_t src_symbols,
     size_t length = src_symbols.length;
 
     for (size_t i = 0; i < length; ++i) {
-        memcpy((void *)rcv_symbols.symbols[i].data,
-               (void *)src_symbols.symbols[i].data,
+        memcpy((void*)rcv_symbols.symbols[i].data,
+               (void*)src_symbols.symbols[i].data,
                symbol_size * sizeof(element_t));
     }
 }
 
 static void erase_symbols(symbol_seq_t rcv_symbols, uint16_t t,
-                          uint16_t *erased_indices) {
+                          uint16_t* erased_indices) {
     size_t symbol_size = rcv_symbols.symbol_size;
     uint16_t n = (uint16_t)rcv_symbols.length;
     uint16_t s = 0;
@@ -62,12 +63,12 @@ static void erase_symbols(symbol_seq_t rcv_symbols, uint16_t t,
     }
 
     for (uint16_t i = 0; i < t; ++i) {
-        memset((void *)rcv_symbols.symbols[erased_indices[i]].data, 0,
+        memset((void*)rcv_symbols.symbols[erased_indices[i]].data, 0,
                symbol_size * sizeof(element_t));
     }
 }
 
-static int test(const RS_t *rs, size_t symbol_size, uint16_t k, uint16_t r,
+static int test(const RS_t* rs, size_t symbol_size, uint16_t k, uint16_t r,
                 uint16_t t) {
     assert(t <= r);
 
@@ -75,7 +76,7 @@ static int test(const RS_t *rs, size_t symbol_size, uint16_t k, uint16_t r,
     symbol_seq_t inf_symbols;
     symbol_seq_t rep_symbols;
     symbol_seq_t rcv_symbols;
-    uint16_t *erased_indices;
+    uint16_t* erased_indices;
     int ret;
 
     ret = seq_alloc(symbol_size, k + r, &src_symbols);
@@ -91,7 +92,7 @@ static int test(const RS_t *rs, size_t symbol_size, uint16_t k, uint16_t r,
         return ret;
     }
 
-    erased_indices = (uint16_t *)malloc(t * sizeof(uint16_t));
+    erased_indices = (uint16_t*)malloc(t * sizeof(uint16_t));
     if (!erased_indices) {
         printf("ERROR: couldn't allocate erased_indices\n");
         seq_free(&rcv_symbols);
@@ -136,10 +137,10 @@ static int test(const RS_t *rs, size_t symbol_size, uint16_t k, uint16_t r,
     return ret;
 }
 
-static void free_all(RS_t *rs) {
-    GF_t *gf = rs->gf;
-    CC_t *cc = rs->cc;
-    FFT_t *fft = rs->fft;
+static void free_all(RS_t* rs) {
+    GF_t* gf = rs->gf;
+    CC_t* cc = rs->cc;
+    FFT_t* fft = rs->fft;
 
     rs_free(rs);
     fft_free(fft);
@@ -152,16 +153,16 @@ int main(void) {
     CC_t _cc;
     FFT_t _fft;
     RS_t _rs;
-    RS_t *rs = &_rs;
+    RS_t* rs = &_rs;
     size_t symbols_size;
     uint16_t k;
     uint16_t r;
     uint16_t t;
 
     {
-        GF_t *gf = &_gf;
-        CC_t *cc = &_cc;
-        FFT_t *fft = &_fft;
+        GF_t* gf = &_gf;
+        CC_t* cc = &_cc;
+        FFT_t* fft = &_fft;
 
         int ret = 0;
 

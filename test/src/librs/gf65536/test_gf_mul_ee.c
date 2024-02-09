@@ -10,7 +10,7 @@
         }                                                                      \
     } while (0)
 
-static int test(const GF_t *gf, element_t a, element_t b, element_t res) {
+static int test(const GF_t* gf, element_t a, element_t b, element_t res) {
     element_t _res;
 
     _res = gf_mul_ee(gf, a, b);
@@ -25,7 +25,7 @@ static int test(const GF_t *gf, element_t a, element_t b, element_t res) {
 
 int main(void) {
     GF_t _gf;
-    GF_t *gf = &_gf;
+    GF_t* gf = &_gf;
     int ret;
 
     ret = gf_alloc(gf);

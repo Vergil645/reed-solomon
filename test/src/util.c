@@ -11,7 +11,7 @@
 
 #include <util.h>
 
-int util_u16_array_eq(const uint16_t *a, size_t a_len, const uint16_t *b,
+int util_u16_array_eq(const uint16_t* a, size_t a_len, const uint16_t* b,
                       size_t b_len) {
     if (a == NULL || b == NULL || a_len != b_len) {
         return 0;
@@ -26,7 +26,7 @@ int util_u16_array_eq(const uint16_t *a, size_t a_len, const uint16_t *b,
     return 1;
 }
 
-void util_u16_array_printf(const uint16_t *a, size_t a_len) {
+void util_u16_array_printf(const uint16_t* a, size_t a_len) {
     if (a == NULL) {
         printf("NULL");
     } else if (a_len == 0) {

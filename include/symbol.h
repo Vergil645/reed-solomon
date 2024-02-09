@@ -22,7 +22,7 @@ typedef struct symbol {
     /**
      * @brief Symbol data.
      */
-    element_t *data;
+    element_t* data;
 } symbol_t;
 
 /**
@@ -33,13 +33,13 @@ typedef struct symbol {
  * @return 0 on success,\n
  *         1 on memory allocation error.
  */
-int symbol_alloc(size_t symbol_size, symbol_t *s);
+int symbol_alloc(size_t symbol_size, symbol_t* s);
 
 /**
  * @brief Deallocate symbol.
  *
  * @param s symbol.
  */
-void symbol_free(symbol_t *s);
+void symbol_free(symbol_t* s);
 
 #endif

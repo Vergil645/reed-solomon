@@ -106,7 +106,7 @@ typedef struct CC {
      * All members are pointers to different parts of one allocated memory
      * fragment. leaders[0] - pointer to the beginning of this fragment.
      */
-    uint16_t *leaders[CC_COSET_SIZES_CNT];
+    uint16_t* leaders[CC_COSET_SIZES_CNT];
 } CC_t;
 
 /**
@@ -116,7 +116,7 @@ typedef struct CC {
  * @return 0 on success,\n
  *         1 on memory allocation error.
  */
-int cc_alloc(CC_t *cc);
+int cc_alloc(CC_t* cc);
 
 /**
  * @brief Make necessary pre-calculations.
@@ -128,14 +128,14 @@ int cc_alloc(CC_t *cc);
  * @return 0 on success,\n
  *         1 on memory allocation error.
  */
-int cc_init(CC_t *cc);
+int cc_init(CC_t* cc);
 
 /**
  * @brief Deallocates cyclotomic cosets data.
  *
  * @param cc cyclotomic cosets data.
  */
-void cc_free(CC_t *cc);
+void cc_free(CC_t* cc);
 
 /**
  * @brief Estimate upper limits on the number of cyclotomic cosets that will be
@@ -146,8 +146,8 @@ void cc_free(CC_t *cc);
  * @param inf_max_cnt upper limit on the number of information symbol cosets.
  * @param rep_max_cnt upper limit on the number of repair symbol cosets.
  */
-void cc_estimate_cosets_cnt(uint16_t k, uint16_t r, uint16_t *inf_max_cnt,
-                            uint16_t *rep_max_cnt);
+void cc_estimate_cosets_cnt(uint16_t k, uint16_t r, uint16_t* inf_max_cnt,
+                            uint16_t* rep_max_cnt);
 
 /**
  * @brief Select cyclotomic cosets over GF(2) modulo N that form information and
@@ -164,10 +164,10 @@ void cc_estimate_cosets_cnt(uint16_t k, uint16_t r, uint16_t *inf_max_cnt,
  * @param rep_max_cnt max number of elements that can be written to rep_leaders.
  * @param rep_cosets_cnt where to place number of written repair symbol cosets.
  */
-void cc_select_cosets(const CC_t *cc, uint16_t k, uint16_t r,
-                      coset_t *inf_cosets, uint16_t inf_max_cnt,
-                      uint16_t *inf_cosets_cnt, coset_t *rep_cosets,
-                      uint16_t rep_max_cnt, uint16_t *rep_cosets_cnt);
+void cc_select_cosets(const CC_t* cc, uint16_t k, uint16_t r,
+                      coset_t* inf_cosets, uint16_t inf_max_cnt,
+                      uint16_t* inf_cosets_cnt, coset_t* rep_cosets,
+                      uint16_t rep_max_cnt, uint16_t* rep_cosets_cnt);
 
 /**
  * @brief Convert list of cyclotomic cosets to list of symbol positions.
@@ -177,8 +177,8 @@ void cc_select_cosets(const CC_t *cc, uint16_t k, uint16_t r,
  * @param positions where to place symbol positions.
  * @param positions_cnt required number of positions to be written.
  */
-void cc_cosets_to_positions(const coset_t *cosets, uint16_t cosets_cnt,
-                            uint16_t *positions, uint16_t positions_cnt);
+void cc_cosets_to_positions(const coset_t* cosets, uint16_t cosets_cnt,
+                            uint16_t* positions, uint16_t positions_cnt);
 
 // Internal functions not for public use.
 // Defined here only in Debug mode in order to test them.

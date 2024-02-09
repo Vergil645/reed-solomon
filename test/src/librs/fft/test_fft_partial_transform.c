@@ -12,8 +12,8 @@
         }                                                                      \
     } while (0)
 
-static int test(const FFT_t *fft, symbol_seq_t f, symbol_seq_t res,
-                const uint16_t *components) {
+static int test(const FFT_t* fft, symbol_seq_t f, symbol_seq_t res,
+                const uint16_t* components) {
     symbol_seq_t _res;
     int ret;
 
@@ -44,8 +44,8 @@ static int test(const FFT_t *fft, symbol_seq_t f, symbol_seq_t res,
     return ret;
 }
 
-static int free_all(FFT_t *fft) {
-    GF_t *gf = fft->gf;
+static int free_all(FFT_t* fft) {
+    GF_t* gf = fft->gf;
 
     fft_free(fft);
     gf_free(gf);
@@ -54,10 +54,10 @@ static int free_all(FFT_t *fft) {
 int main(void) {
     GF_t _gf;
     FFT_t _fft;
-    FFT_t *fft = &_fft;
+    FFT_t* fft = &_fft;
 
     {
-        GF_t *gf = &_gf;
+        GF_t* gf = &_gf;
         int ret;
 
         ret = gf_alloc(gf);

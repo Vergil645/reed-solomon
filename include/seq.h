@@ -32,7 +32,7 @@ typedef struct symbol_seq {
     /**
      * @brief Sequence symbols.
      */
-    symbol_t *symbols;
+    symbol_t* symbols;
 } symbol_seq_t;
 
 /**
@@ -44,13 +44,13 @@ typedef struct symbol_seq {
  * @return 0 on success,\n
  *         1 on memory allocation error.
  */
-int seq_alloc(size_t symbol_size, size_t length, symbol_seq_t *seq);
+int seq_alloc(size_t symbol_size, size_t length, symbol_seq_t* seq);
 
 /**
  * @brief Deallocate sequence.
  *
  * @param seq sequence.
  */
-void seq_free(symbol_seq_t *seq);
+void seq_free(symbol_seq_t* seq);
 
 #endif

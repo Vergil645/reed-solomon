@@ -11,13 +11,13 @@
 
 #include <seq.h>
 
-int seq_alloc(size_t symbol_size, size_t length, symbol_seq_t *seq) {
+int seq_alloc(size_t symbol_size, size_t length, symbol_seq_t* seq) {
     assert(seq != NULL);
 
-    symbol_t *symbols;
+    symbol_t* symbols;
     int ret;
 
-    symbols = (symbol_t *)malloc(length * sizeof(symbol_t));
+    symbols = (symbol_t*)malloc(length * sizeof(symbol_t));
     if (!symbols) {
         return 1;
     }
@@ -41,9 +41,9 @@ int seq_alloc(size_t symbol_size, size_t length, symbol_seq_t *seq) {
     return 0;
 }
 
-void seq_free(symbol_seq_t *seq) {
+void seq_free(symbol_seq_t* seq) {
     size_t length = seq->length;
-    symbol_t *symbols = seq->symbols;
+    symbol_t* symbols = seq->symbols;
 
     for (size_t i = 0; i < length; ++i) {
         symbol_free(symbols + i);

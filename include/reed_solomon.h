@@ -34,9 +34,9 @@
  * @brief Context data.
  */
 typedef struct RS {
-    GF_t *gf;
-    CC_t *cc;
-    FFT_t *fft;
+    GF_t* gf;
+    CC_t* cc;
+    FFT_t* fft;
 } RS_t;
 
 /**
@@ -46,7 +46,7 @@ typedef struct RS {
  * @return 0 on success,\n
  *         1 on memory allocation error.
  */
-int rs_alloc(RS_t *rs);
+int rs_alloc(RS_t* rs);
 
 /**
  * @brief Make necessary pre-calculations.
@@ -56,14 +56,14 @@ int rs_alloc(RS_t *rs);
  * @param cc cyclotomic cosets data.
  * @param fft fft data.
  */
-void rs_init(RS_t *rs, GF_t *gf, CC_t *cc, FFT_t *fft);
+void rs_init(RS_t* rs, GF_t* gf, CC_t* cc, FFT_t* fft);
 
 /**
  * @brief Deallocate context object memory.
  *
  * @param rs context object.
  */
-void rs_free(RS_t *rs);
+void rs_free(RS_t* rs);
 
 /**
  * @brief Generate repair symbols for the given information symbols.
@@ -74,7 +74,7 @@ void rs_free(RS_t *rs);
  * @return 0 on success,\n
  *         1 on memory allocation error.
  */
-int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
+int rs_generate_repair_symbols(const RS_t* rs, symbol_seq_t inf_symbols,
                                symbol_seq_t rep_symbols);
 
 /**
@@ -90,8 +90,8 @@ int rs_generate_repair_symbols(const RS_t *rs, symbol_seq_t inf_symbols,
  *         1 on memory allocation error,\n
  *         or RS_ERR_CANNOT_RESTORE.
  */
-int rs_restore_symbols(const RS_t *rs, uint16_t k, uint16_t r,
-                       symbol_seq_t rcv_symbols, const uint16_t *erased_indices,
+int rs_restore_symbols(const RS_t* rs, uint16_t k, uint16_t r,
+                       symbol_seq_t rcv_symbols, const uint16_t* erased_indices,
                        uint16_t t);
 
 // Internal functions not for public use.
@@ -106,8 +106,8 @@ int rs_restore_symbols(const RS_t *rs, uint16_t k, uint16_t r,
  * @param positions symbol positions.
  * @param syndrome_poly where to place the result.
  */
-void _rs_get_syndrome_poly(const RS_t *rs, symbol_seq_t seq,
-                           const uint16_t *positions,
+void _rs_get_syndrome_poly(const RS_t* rs, symbol_seq_t seq,
+                           const uint16_t* positions,
                            symbol_seq_t syndrome_poly);
 
 /**
@@ -119,8 +119,8 @@ void _rs_get_syndrome_poly(const RS_t *rs, symbol_seq_t seq,
  * @param locator_poly where to place locator polynomial coefficients.
  * @param locator_max_len max number of locator polynomial coefficients.
  */
-void _rs_get_locator_poly(const RS_t *rs, const uint16_t *positions,
-                          uint16_t positions_cnt, element_t *locator_poly,
+void _rs_get_locator_poly(const RS_t* rs, const uint16_t* positions,
+                          uint16_t positions_cnt, element_t* locator_poly,
                           uint16_t locator_max_len);
 
 /**
@@ -136,10 +136,10 @@ void _rs_get_locator_poly(const RS_t *rs, const uint16_t *positions,
  * @param locator_poly where to place locator polynomial coefficients.
  * @param locator_max_len max number of locator polynomial coefficients.
  */
-void _rs_get_rep_symbols_locator_poly(const RS_t *rs, uint16_t r,
-                                      const coset_t *rep_cosets,
+void _rs_get_rep_symbols_locator_poly(const RS_t* rs, uint16_t r,
+                                      const coset_t* rep_cosets,
                                       uint16_t rep_cosets_cnt,
-                                      element_t *locator_poly,
+                                      element_t* locator_poly,
                                       uint16_t locator_max_len);
 
 /**
@@ -151,7 +151,7 @@ void _rs_get_rep_symbols_locator_poly(const RS_t *rs, uint16_t r,
  * @param pos symbol position.
  * @return Forney coefficient.
  */
-element_t _rs_get_forney_coef(const RS_t *rs, const element_t *locator_poly,
+element_t _rs_get_forney_coef(const RS_t* rs, const element_t* locator_poly,
                               uint16_t d, uint16_t pos);
 
 /**
@@ -163,8 +163,8 @@ element_t _rs_get_forney_coef(const RS_t *rs, const element_t *locator_poly,
  * @param locator_poly repair symbols locator polynomial (deg == t).
  * @param evaluator_poly where to place the result.
  */
-void _rs_get_evaluator_poly(const RS_t *rs, symbol_seq_t syndrome_poly,
-                            const element_t *locator_poly,
+void _rs_get_evaluator_poly(const RS_t* rs, symbol_seq_t syndrome_poly,
+                            const element_t* locator_poly,
                             symbol_seq_t evaluator_poly);
 
 /**
@@ -176,10 +176,10 @@ void _rs_get_evaluator_poly(const RS_t *rs, symbol_seq_t syndrome_poly,
  * @param rep_symbols where to place the result.
  * @param rep_positions repair symbol positions.
  */
-void _rs_get_repair_symbols(const RS_t *rs, const element_t *locator_poly,
+void _rs_get_repair_symbols(const RS_t* rs, const element_t* locator_poly,
                             symbol_seq_t evaluator_poly,
                             symbol_seq_t rep_symbols,
-                            const uint16_t *rep_positions);
+                            const uint16_t* rep_positions);
 
 /**
  * @brief Restore erased symbols if it is possible.
@@ -191,10 +191,10 @@ void _rs_get_repair_symbols(const RS_t *rs, const element_t *locator_poly,
  * @param rcv_symbols received symbols, restored symbols will be written here.
  * @param erased_indices indices of erased symbols in rcv_symbols.
  */
-void _rs_restore_erased(const RS_t *rs, const element_t *locator_poly,
-                        symbol_seq_t evaluator_poly, const uint16_t *positions,
+void _rs_restore_erased(const RS_t* rs, const element_t* locator_poly,
+                        symbol_seq_t evaluator_poly, const uint16_t* positions,
                         symbol_seq_t rcv_symbols,
-                        const uint16_t *erased_indices);
+                        const uint16_t* erased_indices);
 
 #endif
 

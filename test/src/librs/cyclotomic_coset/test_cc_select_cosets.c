@@ -13,7 +13,7 @@
         }                                                                      \
     } while (0)
 
-static int cosets_eq(const coset_t *a, uint16_t a_len, const coset_t *b,
+static int cosets_eq(const coset_t* a, uint16_t a_len, const coset_t* b,
                      uint16_t b_len) {
     if (a == NULL || b == NULL || a_len != b_len) {
         return 0;
@@ -28,7 +28,7 @@ static int cosets_eq(const coset_t *a, uint16_t a_len, const coset_t *b,
     return 1;
 }
 
-static void printf_cosets(const coset_t *cosets, uint16_t cosets_cnt) {
+static void printf_cosets(const coset_t* cosets, uint16_t cosets_cnt) {
     if (cosets == NULL) {
         printf("NULL");
     } else if (cosets_cnt == 0) {
@@ -43,22 +43,22 @@ static void printf_cosets(const coset_t *cosets, uint16_t cosets_cnt) {
     }
 }
 
-static int test(const CC_t *cc, uint16_t k, uint16_t r, coset_t *inf_cosets,
-                uint16_t inf_cosets_cnt, coset_t *rep_cosets,
+static int test(const CC_t* cc, uint16_t k, uint16_t r, coset_t* inf_cosets,
+                uint16_t inf_cosets_cnt, coset_t* rep_cosets,
                 uint16_t rep_cosets_cnt) {
-    coset_t *_inf_cosets;
-    coset_t *_rep_cosets;
+    coset_t* _inf_cosets;
+    coset_t* _rep_cosets;
     uint16_t _inf_cosets_cnt;
     uint16_t _rep_cosets_cnt;
     int ret = 0;
 
-    _inf_cosets = (coset_t *)malloc(inf_cosets_cnt * sizeof(coset_t));
+    _inf_cosets = (coset_t*)malloc(inf_cosets_cnt * sizeof(coset_t));
     if (!_inf_cosets) {
         printf("ERROR: cannot allocate memory for _inf_cosets\n");
         return 1;
     }
 
-    _rep_cosets = (coset_t *)malloc(rep_cosets_cnt * sizeof(coset_t));
+    _rep_cosets = (coset_t*)malloc(rep_cosets_cnt * sizeof(coset_t));
     if (!_rep_cosets) {
         printf("ERROR: cannot allocate memory for _rep_cosets\n");
         free(_inf_cosets);
@@ -107,7 +107,7 @@ static int test(const CC_t *cc, uint16_t k, uint16_t r, coset_t *inf_cosets,
 
 int main(void) {
     CC_t _cc;
-    CC_t *cc = &_cc;
+    CC_t* cc = &_cc;
     int ret;
 
     ret = cc_alloc(cc);

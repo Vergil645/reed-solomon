@@ -21,7 +21,7 @@
  * @brief Galois field data and pre-computed values.
  */
 typedef struct FFT {
-    GF_t *gf;
+    GF_t* gf;
 } FFT_t;
 
 /**
@@ -31,7 +31,7 @@ typedef struct FFT {
  * @return 0 on success,\n
  *         1 on memory allocation error.
  */
-int fft_alloc(FFT_t *fft);
+int fft_alloc(FFT_t* fft);
 
 /**
  * @brief Make necessary for Discrete Fourier transform implementation
@@ -40,14 +40,14 @@ int fft_alloc(FFT_t *fft);
  * @param fft context object.
  * @param gf Galois field data.
  */
-void fft_init(FFT_t *fft, GF_t *gf);
+void fft_init(FFT_t* fft, GF_t* gf);
 
 /**
  * @brief Deallocate context object.
  *
  * @param fft context object.
  */
-void fft_free(FFT_t *fft);
+void fft_free(FFT_t* fft);
 
 /**
  * @brief Compute a given number of first components of Discrete Fourier
@@ -61,7 +61,7 @@ void fft_free(FFT_t *fft);
  * @param positions sequence coefficients indices.
  * @param res where to place the result.
  */
-void fft_transform(const FFT_t *fft, symbol_seq_t f, const uint16_t *positions,
+void fft_transform(const FFT_t* fft, symbol_seq_t f, const uint16_t* positions,
                    symbol_seq_t res);
 
 /**
@@ -77,7 +77,7 @@ void fft_transform(const FFT_t *fft, symbol_seq_t f, const uint16_t *positions,
  * @param components negative components of the discrete Fourier transform to be
  * computed.
  */
-void fft_partial_transform(const FFT_t *fft, symbol_seq_t f, symbol_seq_t res,
-                           const uint16_t *components);
+void fft_partial_transform(const FFT_t* fft, symbol_seq_t f, symbol_seq_t res,
+                           const uint16_t* components);
 
 #endif

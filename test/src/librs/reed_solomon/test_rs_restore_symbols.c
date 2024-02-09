@@ -14,8 +14,8 @@
         }                                                                      \
     } while (0)
 
-static int test(const RS_t *rs, uint16_t k, uint16_t r,
-                symbol_seq_t src_symbols, const uint16_t *erased_indices,
+static int test(const RS_t* rs, uint16_t k, uint16_t r,
+                symbol_seq_t src_symbols, const uint16_t* erased_indices,
                 uint16_t t) {
     symbol_seq_t rcv_symbols;
     int ret;
@@ -27,13 +27,13 @@ static int test(const RS_t *rs, uint16_t k, uint16_t r,
     }
 
     for (uint16_t i = 0; i < src_symbols.length; ++i) {
-        memcpy((void *)rcv_symbols.symbols[i].data,
-               (void *)src_symbols.symbols[i].data,
+        memcpy((void*)rcv_symbols.symbols[i].data,
+               (void*)src_symbols.symbols[i].data,
                src_symbols.symbol_size * sizeof(element_t));
     }
 
     for (uint16_t i = 0; i < t; ++i) {
-        memset((void *)rcv_symbols.symbols[erased_indices[i]].data, 0,
+        memset((void*)rcv_symbols.symbols[erased_indices[i]].data, 0,
                rcv_symbols.symbol_size * sizeof(element_t));
     }
 
@@ -58,10 +58,10 @@ static int test(const RS_t *rs, uint16_t k, uint16_t r,
     return ret;
 }
 
-static void free_all(RS_t *rs) {
-    GF_t *gf = rs->gf;
-    CC_t *cc = rs->cc;
-    FFT_t *fft = rs->fft;
+static void free_all(RS_t* rs) {
+    GF_t* gf = rs->gf;
+    CC_t* cc = rs->cc;
+    FFT_t* fft = rs->fft;
 
     rs_free(rs);
     fft_free(fft);
@@ -74,12 +74,12 @@ int main(void) {
     CC_t _cc;
     FFT_t _fft;
     RS_t _rs;
-    RS_t *rs = &_rs;
+    RS_t* rs = &_rs;
 
     {
-        GF_t *gf = &_gf;
-        CC_t *cc = &_cc;
-        FFT_t *fft = &_fft;
+        GF_t* gf = &_gf;
+        CC_t* cc = &_cc;
+        FFT_t* fft = &_fft;
 
         int ret = 0;
 
