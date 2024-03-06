@@ -13,22 +13,44 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # ===== BUILDING THE PROJECT =====
 # ================================
 
-include_directories("include")
+set(CMAKE_C_FLAGS_RELEASE "${ADDITIONAL_C_FLAGS_RELEASE} -Wall -DNDEBUG")
 
+include_directories(
+    "include"
+    "external/flec-moepgf/include")
+
+set(EXTERNAL "external")
 set(SOURCES "src")
-set(LIBRS_SOURCES "src/librs")
+set(LIBMEMORY_SOURCES "src/memory")
+set(LIBRLC_SOURCES "src/rlc")
+set(LIBRS_SOURCES "src/rs")
+
+add_library(moepgf STATIC IMPORTED)
+set_target_properties(moepgf PROPERTIES IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/${EXTERNAL}/libmoepgf.a")
+
+add_library(memory STATIC
+    "${LIBMEMORY_SOURCES}/seq.c"
+    "${LIBMEMORY_SOURCES}/symbol.c")
+
+add_library(rlc STATIC
+    "${LIBRLC_SOURCES}/equation.c"
+    "${LIBRLC_SOURCES}/gf256.c"
+    "${LIBRLC_SOURCES}/rlc.c"
+    "${LIBRLC_SOURCES}/system.c")
+target_link_libraries(rlc memory moepgf)
 
 add_library(rs STATIC
     "${LIBRS_SOURCES}/cyclotomic_coset.c"
     "${LIBRS_SOURCES}/fft.c"
     "${LIBRS_SOURCES}/gf65536.c"
-    "${LIBRS_SOURCES}/reed_solomon.c"
-    "${LIBRS_SOURCES}/symbol.c"
-    "${LIBRS_SOURCES}/seq.c")
+    "${LIBRS_SOURCES}/reed_solomon.c")
+target_link_libraries(rs memory)
 
-add_executable(compare_op "${SOURCES}/compare_op.c")
-target_compile_options(compare_op PUBLIC -mavx)
-target_link_libraries(compare_op rs)
+add_executable(compare_op_gf256 "${SOURCES}/compare_op_gf256.c")
+target_link_libraries(compare_op_gf256 rlc)
+
+add_executable(compare_codes "${SOURCES}/compare_codes.c")
+target_link_libraries(compare_codes rs rlc)
 
 # ===================
 # ===== TESTING =====

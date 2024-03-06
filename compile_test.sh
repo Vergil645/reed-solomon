@@ -3,7 +3,7 @@
 set -e
 
 # Build
-./compile_debug.sh
+bash compile_debug.sh
 
 # Run Ctest
 echo
@@ -11,7 +11,7 @@ echo "========================="
 echo "===== RUNNING CTEST ====="
 echo "========================="
 echo
-ctest --test-dir build --stop-on-failure
+ctest --test-dir build/debug --stop-on-failure
 
 # Run tests with Valgind
 

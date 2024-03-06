@@ -1,5 +1,6 @@
 /.vscode
 
+/external/*.a
 /build
 /bin
 /lib
@@ -8,3 +9,9 @@
 
 /html
 /latex
+
+/*.folded
+/*.perf
+/*.svg
+/*.data
+/*.data.old

@@ -1,0 +1,3 @@
+[submodule "external/flec-moepgf"]
+	path = external/flec-moepgf
+	url = https://github.com/francoismichel/flec-moepgf

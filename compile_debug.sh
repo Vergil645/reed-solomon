@@ -2,7 +2,12 @@
 
 set -e
 
+rm bin/*
+rm lib/*
+rm test/bin/*
+rm test/lib/*
+
 # Build
-rm -rf build/*
-cmake -S. -Bbuild -DBUILD_TESTING=true
-make -C build
+rm -rf build/debug/*
+cmake -S. -Bbuild/debug -DBUILD_TESTING=true -DCMAKE_BUILD_TYPE=Debug
+make -C build/debug
