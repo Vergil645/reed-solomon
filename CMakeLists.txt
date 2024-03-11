@@ -13,7 +13,8 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # ===== BUILDING THE PROJECT =====
 # ================================
 
-set(CMAKE_C_FLAGS_RELEASE "${ADDITIONAL_C_FLAGS_RELEASE} -Wall -DNDEBUG")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fanalyzer")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${ADDITIONAL_C_FLAGS_RELEASE} -Wall -DNDEBUG")
 
 include_directories(
     "include"
@@ -51,6 +52,9 @@ target_link_libraries(compare_op_gf256 rlc)
 
 add_executable(compare_codes "${SOURCES}/compare_codes.c")
 target_link_libraries(compare_codes rs rlc)
+
+add_executable(run_enc_dec "${SOURCES}/run_enc_dec.c")
+target_link_libraries(run_enc_dec rs rlc)
 
 # ===================
 # ===== TESTING =====

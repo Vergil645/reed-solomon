@@ -13,7 +13,7 @@ bool util_u16_array_eq(const uint16_t* a, size_t a_len, const uint16_t* b, size_
     uint16_t* data_1 = (uint16_t*)a;
     uint16_t* data_2 = (uint16_t*)b;
 
-    for (uint16_t* end_1 = data_1 + length; data_1 != end_1; ++data_1, ++data_2) {
+    for (const uint16_t* end_1 = data_1 + length; data_1 != end_1; ++data_1, ++data_2) {
         if (*data_1 != *data_2)
             return false;
     }

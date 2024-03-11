@@ -119,9 +119,9 @@ static int get_one_coded_symbol(RLC_t* rlc, const symbol_seq_t* inf_symbols, sym
 
 int rlc_generate_repair_symbols(RLC_t* rlc, const symbol_seq_t* inf_symbols,
                                 const symbol_seq_t* rep_symbols, uint32_t* seeds) {
-    int err;
-
     for (uint16_t i = 0; i < rep_symbols->length; ++i) {
+        int err;
+
         err = get_one_coded_symbol(rlc, inf_symbols, rep_symbols->symbols[i], &seeds[i]);
         if (err)
             return err;
@@ -238,6 +238,7 @@ int rlc_restore_symbols(RLC_t* rlc, uint16_t k, uint16_t r, symbol_seq_t* rcv_sy
                 free(system.equations[j]->coefs);
                 free(system.equations[j]);
             }
+            free(equations);
             return err;
         }
     }

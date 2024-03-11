@@ -45,7 +45,7 @@ bool symbol_eq(const symbol_t* a, const symbol_t* b, size_t symbol_size) {
     uint8_t* data_1 = a->data;
     uint8_t* data_2 = b->data;
 
-    for (uint8_t* end_1 = data_1 + symbol_size; data_1 != end_1; ++data_1, ++data_2) {
+    for (const uint8_t* end_1 = data_1 + symbol_size; data_1 != end_1; ++data_1, ++data_2) {
         if (*data_1 != *data_2)
             return false;
     }
@@ -62,7 +62,7 @@ void symbol_printf(const symbol_t* s, size_t symbol_size) {
         uint8_t* data = s->data;
 
         printf("[");
-        for (uint8_t* end = data + symbol_size - 1; data != end; ++data)
+        for (const uint8_t* end = data + symbol_size - 1; data != end; ++data)
             printf("%u, ", *data);
         printf("%u]", *data);
     }

@@ -26,11 +26,9 @@ GF_t* gf_create() {
         gf->normal_repr_by_subfield[i] = gf->normal_repr_by_subfield[i - 1] + N;
 
     element_t* pow_table = gf->pow_table;
-    element_t* normal_basis;
     element_t elem;
     uint16_t** normal_repr_by_subfield = gf->normal_repr_by_subfield;
     uint16_t* log_table = gf->log_table;
-    uint8_t m; // cyclotomic coset size
     poly_t cur_poly = 1;
 
     for (uint16_t i = 0; i < N; ++i) {
@@ -46,8 +44,8 @@ GF_t* gf_create() {
         pow_table[i] = pow_table[i - N];
 
     for (uint8_t i = 0; i < CC_COSET_SIZES_CNT; ++i) {
-        normal_basis = g_normal_basis_by_subfield[i];
-        m = 1 << i;
+        element_t* normal_basis = g_normal_basis_by_subfield[i];
+        uint8_t m = 1 << i; // cyclotomic coset size
 
         memset((void*)normal_repr_by_subfield[i], 0, N * sizeof(uint16_t));
 
@@ -129,14 +127,15 @@ void gf_add(void* a, const void* b, size_t symbol_size) {
     uint64_t* data64_2 = (uint64_t*)b;
     size_t max_64_idx = symbol_size / sizeof(uint64_t);
 
-    for (uint64_t* end64_1 = data64_1 + max_64_idx; data64_1 != end64_1; ++data64_1, ++data64_2)
+    for (const uint64_t* end64_1 = data64_1 + max_64_idx; data64_1 != end64_1;
+         ++data64_1, ++data64_2)
         *data64_1 ^= *data64_2;
 
     element_t* data_1 = (element_t*)data64_1;
     element_t* data_2 = (element_t*)data64_2;
     size_t max_idx = symbol_size / sizeof(element_t);
 
-    for (element_t* end_1 = (element_t*)a + max_idx; data_1 != end_1; ++data_1, ++data_2)
+    for (const element_t* end_1 = (element_t*)a + max_idx; data_1 != end_1; ++data_1, ++data_2)
         *data_1 ^= *data_2;
 #endif
 }
@@ -148,13 +147,13 @@ void gf_mul(GF_t* gf, void* a, element_t coef, size_t symbol_size) {
         uint64_t* data64 = (uint64_t*)a;
         size_t max_64_idx = symbol_size / sizeof(uint64_t);
 
-        for (uint64_t* end64_1 = data64 + max_64_idx; data64 != end64_1; ++data64)
+        for (const uint64_t* end64_1 = data64 + max_64_idx; data64 != end64_1; ++data64)
             *data64 = 0;
 
         element_t* data = (element_t*)data64;
         size_t max_idx = symbol_size / sizeof(element_t);
 
-        for (element_t* end_1 = (element_t*)a + max_idx; data != end_1; ++data)
+        for (const element_t* end_1 = (element_t*)a + max_idx; data != end_1; ++data)
             *data = 0;
 
         return;
@@ -165,14 +164,13 @@ void gf_mul(GF_t* gf, void* a, element_t coef, size_t symbol_size) {
 
     element_t* pow_table_shifted;
     element_t* data = (element_t*)a;
-    element_t val;
     uint16_t* log_table = gf->log_table;
     size_t max_idx = symbol_size / sizeof(element_t);
 
     pow_table_shifted = gf->pow_table + log_table[coef];
 
-    for (element_t* end = data + max_idx; data != end; ++data) {
-        val = *data;
+    for (const element_t* end = data + max_idx; data != end; ++data) {
+        element_t val = *data;
         if (val != 0)
             *data = pow_table_shifted[log_table[val]];
     }
@@ -192,14 +190,13 @@ void gf_madd(GF_t* gf, void* a, element_t coef, const void* b, size_t symbol_siz
     element_t* pow_table_shifted;
     element_t* data_1 = (element_t*)a;
     element_t* data_2 = (element_t*)b;
-    element_t val_2;
     uint16_t* log_table = gf->log_table;
     size_t max_idx = symbol_size / sizeof(element_t);
 
     pow_table_shifted = gf->pow_table + log_table[coef];
 
-    for (element_t* end_1 = data_1 + max_idx; data_1 != end_1; ++data_1, ++data_2) {
-        val_2 = *data_2;
+    for (const element_t* end_1 = data_1 + max_idx; data_1 != end_1; ++data_1, ++data_2) {
+        element_t val_2 = *data_2;
         if (val_2 != 0)
             *data_1 ^= pow_table_shifted[log_table[val_2]];
     }

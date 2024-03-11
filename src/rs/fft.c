@@ -14,7 +14,9 @@
 
 #include <rs/fft.h>
 
-void fft_transform(GF_t* gf, const symbol_seq_t* f, const uint16_t* positions, symbol_seq_t* res) {
+// cppcheck-suppress unusedFunction
+void __attribute_maybe_unused__ fft_transform(GF_t* gf, const symbol_seq_t* f,
+                                              const uint16_t* positions, symbol_seq_t* res) {
     assert(gf != NULL);
     assert(f != NULL);
     assert(positions != NULL);
@@ -112,8 +114,10 @@ int fft_transform_cycl(GF_t* gf, const symbol_seq_t* f, const uint16_t* position
     return 0;
 }
 
-void fft_partial_transform(GF_t* gf, const symbol_seq_t* f, const uint16_t* components,
-                           symbol_seq_t* res) {
+// cppcheck-suppress unusedFunction
+void __attribute_maybe_unused__ fft_partial_transform(GF_t* gf, const symbol_seq_t* f,
+                                                      const uint16_t* components,
+                                                      symbol_seq_t* res) {
     assert(gf != NULL);
     assert(f != NULL);
     assert(components != NULL);
@@ -123,12 +127,11 @@ void fft_partial_transform(GF_t* gf, const symbol_seq_t* f, const uint16_t* comp
     size_t symbol_size = f->symbol_size;
     element_t* pow_table = gf->pow_table;
     element_t coef;
-    uint16_t j;
 
     for (uint16_t res_idx = 0; res_idx < res->length; ++res_idx) {
-        memset((void*)res->symbols[res_idx]->data, 0, symbol_size);
+        uint16_t j = (N - components[res_idx]) % N;
 
-        j = (N - components[res_idx]) % N;
+        memset((void*)res->symbols[res_idx]->data, 0, symbol_size);
 
         for (uint16_t i = 0; i < f->length; ++i) {
             coef = pow_table[(i * j) % N];
@@ -150,7 +153,6 @@ int fft_partial_transform_cycl(GF_t* gf, const symbol_seq_t* f, const coset_t* c
     size_t symbol_size = f->symbol_size;
     uint16_t* normal_repr;
     uint16_t idx = 0;
-    coset_t coset;
     element_t coef;
 
     u = seq_create(CC_MAX_COSET_SIZE, symbol_size);
@@ -158,7 +160,7 @@ int fft_partial_transform_cycl(GF_t* gf, const symbol_seq_t* f, const coset_t* c
         return 1;
 
     for (const coset_t* end = cosets + cosets_cnt; cosets != end; ++cosets) {
-        coset = *cosets;
+        coset_t coset = *cosets;
 
         uint16_t s = N - coset.leader;
         uint8_t m = coset.size;

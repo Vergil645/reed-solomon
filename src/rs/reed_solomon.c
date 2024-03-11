@@ -91,14 +91,12 @@ static void _rs_get_locator_poly(const RS_t* rs, const uint16_t* positions, uint
 
     GF_t* gf = rs->gf;
     element_t* pow_table = gf->pow_table;
-    element_t coef;
-    uint16_t pos;
 
     locator_poly[0] = 1;
     for (uint16_t d = 0; d < positions_cnt; ++d) {
         locator_poly[d + 1] = 0;
-        pos = positions[d];
-        coef = pow_table[pos];
+        uint16_t pos = positions[d];
+        element_t coef = pow_table[pos];
 
         for (uint16_t i = d + 1; i > 0; --i)
             locator_poly[i] ^= gf_mul_ee(gf, locator_poly[i - 1], coef);
@@ -134,7 +132,7 @@ static void _rs_get_rep_symbols_locator_poly(const RS_t* rs, uint16_t r, const c
     assert(_r1 == r);
 #endif
 
-    element_t coset_locator_poly[RS_COSET_LOCATOR_MAX_LEN];
+    element_t coset_locator_poly[RS_COSET_LOCATOR_MAX_LEN] = {0};
     coset_t coset;
     uint16_t coset_elements[CC_MAX_COSET_SIZE];
     uint16_t d; // locator polynomial degree
@@ -198,12 +196,11 @@ static element_t _rs_get_forney_coef(const RS_t* rs, const element_t* locator_po
     element_t* pow_table = gf->pow_table;
     element_t p; // divisible element = alpha^{position}
     element_t q; // divisor = locator_poly'(alpha^{-position})
-    element_t coef;
 
     p = pow_table[pos];
     q = 0;
     for (uint16_t j = 0; j < d; j += 2) {
-        coef = locator_poly[j + 1];
+        element_t coef = locator_poly[j + 1];
 
         if (coef == 0) {
             continue;
@@ -237,14 +234,13 @@ static void _rs_get_evaluator_poly(const RS_t* rs, const symbol_seq_t* syndrome_
     GF_t* gf = rs->gf;
     size_t symbol_size = syndrome_poly->symbol_size;
     uint16_t r = syndrome_poly->length;
-    element_t coef;
 
     // Evaluator polynomial initialization.
     for (uint16_t i = 0; i < r; ++i)
         memset((void*)evaluator_poly->symbols[i]->data, 0, symbol_size);
 
     for (uint16_t i = 0; i < r; ++i) {
-        coef = locator_poly[i];
+        element_t coef = locator_poly[i];
 
         if (coef == 0)
             continue;
@@ -283,7 +279,6 @@ static int _rs_get_repair_symbols(const RS_t* rs, const element_t* locator_poly,
     GF_t* gf = rs->gf;
     size_t symbol_size = evaluator_poly->symbol_size;
     uint16_t r = rep_symbols->length;
-    element_t coef;
     int err;
 
     // fft_partial_transform(gf, evaluator_poly, rep_symbols,
@@ -294,7 +289,7 @@ static int _rs_get_repair_symbols(const RS_t* rs, const element_t* locator_poly,
 
     // TODO: implement deffered Forney scalling
     for (uint16_t i = 0; i < r; ++i) {
-        coef = _rs_get_forney_coef(rs, locator_poly, r, rep_positions[i]);
+        element_t coef = _rs_get_forney_coef(rs, locator_poly, r, rep_positions[i]);
         gf_mul(gf, (void*)rep_symbols->symbols[i]->data, coef, symbol_size);
     }
 

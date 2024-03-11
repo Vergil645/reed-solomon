@@ -210,11 +210,12 @@ void cc_cosets_to_positions(const coset_t* cosets, uint16_t cosets_cnt, uint16_t
     assert(cosets != NULL);
     assert(positions != NULL);
 
-    uint16_t s;
-    uint16_t cur_coset_elem;
     uint16_t positions_idx = 0;
 
     for (uint16_t i = 0; i < cosets_cnt && positions_idx < positions_cnt; ++i) {
+        uint16_t s;
+        uint16_t cur_coset_elem;
+
         s = cosets[i].leader;
         positions[positions_idx++] = s;
 

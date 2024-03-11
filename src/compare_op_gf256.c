@@ -45,9 +45,10 @@ static void compare_by_clock(uint8_t* a, uint8_t* b, uint8_t** mul) {
     elapsed_time_add = (end - start);
 
     printf("===== clock() =====\n");
-    printf("add (coef=1) time: %lu\n", elapsed_time_add);
-    printf("mul (coef>1) time: %lu\n", elapsed_time_mul);
-    printf("ratio \"mul/add^\": %.3f\n", (double)elapsed_time_mul / (double)elapsed_time_add);
+    printf("< += >   (coef=1) time: %lu\n", elapsed_time_add);
+    printf("< +=.* > (coef>1) time: %lu\n", elapsed_time_mul);
+    printf("time ratio \"< +=.* >/< += >\": %.3f\n",
+           (double)elapsed_time_mul / (double)elapsed_time_add);
 }
 
 #define USECS_IN_SEC 1000000
@@ -80,9 +81,9 @@ static void compare_by_gettimeofday(uint8_t* a, uint8_t* b, uint8_t** mul) {
     elapsed_time_add = get_diff_secs(start, end);
 
     printf("===== gettimeofday(...) =====\n");
-    printf("add (coef=1) time: %.3f secs\n", elapsed_time_add);
-    printf("mul (coef>1) time: %.3f secs\n", elapsed_time_mul);
-    printf("ratio \"mul/add^\": %.3f\n", elapsed_time_mul / elapsed_time_add);
+    printf("< += >   (coef=1) time: %.3f secs\n", elapsed_time_add);
+    printf("< +=.* > (coef>1) time: %.3f secs\n", elapsed_time_mul);
+    printf("time ratio \"< +=.* >/< += >\": %.3f\n", elapsed_time_mul / elapsed_time_add);
 }
 
 int main(void) {

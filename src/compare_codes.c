@@ -211,27 +211,19 @@ int main(void) {
 
     srand(SEED);
 
-    size_t symbol_size;
-    uint16_t k;
-    uint16_t r;
-    uint16_t t;
-
     double enc_rs_rlc_ratio = 0.0;
     double enc_rs_rlc_ratio_sum = 0.0;
     double enc_rlc_rs_ratio_sum = 0.0;
     double dec_rs_rlc_ratio = 0.0;
     double dec_rs_rlc_ratio_sum = 0.0;
     double dec_rlc_rs_ratio_sum = 0.0;
-    int err;
 
     for (int _i = 0; _i < TESTS_CNT; ++_i) {
-        symbol_size = SYMBOL_SIZE;
-
-        // k = 100 + rand() % 101;
-        // r = 1 + rand() % 8;
-        k = 1000 + rand() % 1001;
-        r = 10 + rand() % 71;
-        t = r;
+        size_t symbol_size = SYMBOL_SIZE;
+        uint16_t k = 1000 + rand() % 1001;
+        uint16_t r = 10 + rand() % 71;
+        uint16_t t = r;
+        int err;
 
         err = compare(rs, rlc, symbol_size, k, r, t, &enc_rs_rlc_ratio, &dec_rs_rlc_ratio);
         if (err) {
@@ -249,11 +241,11 @@ int main(void) {
 
     printf("===== clock() =====\n");
     printf("encode:\n");
-    printf("    avg time ratio \"RS/RLC\": %.3f\n", enc_rs_rlc_ratio_sum / TESTS_CNT);
-    printf("    avg time ratio \"RLC/RS\": %.3f\n", enc_rlc_rs_ratio_sum / TESTS_CNT);
+    printf("    time ratio \"RS/RLC\": %.3f\n", enc_rs_rlc_ratio_sum / TESTS_CNT);
+    printf("    time ratio \"RLC/RS\": %.3f\n", enc_rlc_rs_ratio_sum / TESTS_CNT);
     printf("decode:\n");
-    printf("    avg time ratio \"RS/RLC\": %.3f\n", dec_rs_rlc_ratio_sum / TESTS_CNT);
-    printf("    avg time ratio \"RLC/RS\": %.3f\n", dec_rlc_rs_ratio_sum / TESTS_CNT);
+    printf("    time ratio \"RS/RLC\": %.3f\n", dec_rs_rlc_ratio_sum / TESTS_CNT);
+    printf("    time ratio \"RLC/RS\": %.3f\n", dec_rlc_rs_ratio_sum / TESTS_CNT);
 
     rlc_destroy(rlc);
     rs_destroy(rs);
