@@ -50,6 +50,7 @@ uint8_t gf256_mul_formula(uint8_t a, uint8_t b) {
     return p;
 }
 
+// cppcheck-suppress unusedFunction
 uint8_t gf256_mul(uint8_t a, uint8_t b, uint8_t** mul) { return mul[a][b]; }
 
 /**
@@ -64,12 +65,6 @@ void gf256_symbol_add_scaled(void* symbol1, uint8_t coef, const void* symbol2, u
 #if SYMBOL_USE_NATIVE_LIBRARY == true
     gflib.maddrc(symbol1, symbol2, coef, symbol_size);
 #else
-    // uint8_t* data1 = (uint8_t*)symbol1;
-    // uint8_t* data2 = (uint8_t*)symbol2;
-    // for (uint32_t i = 0; i < symbol_size; i++) {
-    //     data1[i] ^= gf256_mul(coef, data2[i], mul);
-    // }
-
     if (coef == 0)
         return;
 
@@ -77,6 +72,12 @@ void gf256_symbol_add_scaled(void* symbol1, uint8_t coef, const void* symbol2, u
         gf256_symbol_add(symbol1, symbol2, symbol_size);
         return;
     }
+
+    // uint8_t* data1 = (uint8_t*)symbol1;
+    // uint8_t* data2 = (uint8_t*)symbol2;
+    // for (uint32_t i = 0; i < symbol_size; i++) {
+    //     data1[i] ^= gf256_mul(coef, data2[i], mul);
+    // }
 
     uint8_t* data_1 = (uint8_t*)symbol1;
     uint8_t* data_2 = (uint8_t*)symbol2;

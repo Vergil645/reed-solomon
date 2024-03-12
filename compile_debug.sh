@@ -31,5 +31,4 @@ cppcheck \
     --force \
     --suppress=missingIncludeSystem \
     -Iinclude -Itest/include \
-    -isrc/rlc \
     src test/src

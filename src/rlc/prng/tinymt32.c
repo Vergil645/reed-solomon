@@ -42,6 +42,7 @@ static __always_inline void tinymt32_init_by_array(tinymt32_t* random, uint32_t 
                                                    int key_length);
 
 #if defined(__GNUC__)
+// cppcheck-suppress unusedFunction
 /**
  * This function always returns 127
  * @param random not used
@@ -68,8 +69,8 @@ __always_inline static void tinymt32_next_state(tinymt32_t* random) {
     random->status[1] = random->status[2];
     random->status[2] = x ^ (y << TINYMT32_SH1);
     random->status[3] = y;
-    random->status[1] ^= -((int32_t)(y & 1)) & random->mat1;
-    random->status[2] ^= -((int32_t)(y & 1)) & random->mat2;
+    random->status[1] ^= -((int32_t)(y & 1)) & random->mat1; // cppcheck-suppress integerOverflow
+    random->status[2] ^= -((int32_t)(y & 1)) & random->mat2; // cppcheck-suppress integerOverflow
 }
 
 /**
@@ -87,7 +88,7 @@ __always_inline static uint32_t tinymt32_temper(tinymt32_t* random) {
     t1 = random->status[0] + (random->status[2] >> TINYMT32_SH8);
 #endif
     t0 ^= t1;
-    t0 ^= -((int32_t)(t1 & 1)) & random->tmat;
+    t0 ^= -((int32_t)(t1 & 1)) & random->tmat; // cppcheck-suppress integerOverflow
     return t0;
 }
 
@@ -111,7 +112,7 @@ __always_inline static float tinymt32_temper_conv(tinymt32_t* random) {
     t1 = random->status[0] + (random->status[2] >> TINYMT32_SH8);
 #endif
     t0 ^= t1;
-    conv.u = ((t0 ^ (-((int32_t)(t1 & 1)) & random->tmat)) >> 9) | UINT32_C(0x3f800000);
+    conv.u = ((t0 ^ (-((int32_t)(t1 & 1)) & random->tmat)) >> 9) | UINT32_C(0x3f800000); // cppcheck-suppress integerOverflow
     return conv.f;
 }
 
@@ -135,7 +136,7 @@ __always_inline static float tinymt32_temper_conv_open(tinymt32_t* random) {
     t1 = random->status[0] + (random->status[2] >> TINYMT32_SH8);
 #endif
     t0 ^= t1;
-    conv.u = ((t0 ^ (-((int32_t)(t1 & 1)) & random->tmat)) >> 9) | UINT32_C(0x3f800001);
+    conv.u = ((t0 ^ (-((int32_t)(t1 & 1)) & random->tmat)) >> 9) | UINT32_C(0x3f800001); // cppcheck-suppress integerOverflow
     return conv.f;
 }
 
@@ -162,6 +163,7 @@ __always_inline static float tinymt32_generate_float(tinymt32_t* random) {
     return (tinymt32_temper(random) >> 8) * TINYMT32_MUL;
 }
 
+// cppcheck-suppress unusedFunction
 /**
  * This function outputs floating point number from internal state.
  * This function is implemented using union trick.
@@ -173,6 +175,7 @@ __always_inline static float tinymt32_generate_float12(tinymt32_t* random) {
     return tinymt32_temper_conv(random);
 }
 
+// cppcheck-suppress unusedFunction
 /**
  * This function outputs floating point number from internal state.
  * This function is implemented using union trick.
@@ -184,6 +187,7 @@ __always_inline static float tinymt32_generate_float01(tinymt32_t* random) {
     return tinymt32_temper_conv(random) - 1.0f;
 }
 
+// cppcheck-suppress unusedFunction
 /**
  * This function outputs floating point number from internal state.
  * This function may return 1.0 and never returns 0.0.
@@ -195,6 +199,7 @@ __always_inline static float tinymt32_generate_floatOC(tinymt32_t* random) {
     return 1.0f - tinymt32_generate_float(random);
 }
 
+// cppcheck-suppress unusedFunction
 /**
  * This function outputs floating point number from internal state.
  * This function returns neither 0.0 nor 1.0.
@@ -206,6 +211,7 @@ __always_inline static float tinymt32_generate_floatOO(tinymt32_t* random) {
     return tinymt32_temper_conv_open(random) - 1.0f;
 }
 
+// cppcheck-suppress unusedFunction
 /**
  * This function outputs double precision floating point number from
  * internal state. The returned value has 32-bit precision.
@@ -294,6 +300,7 @@ static __always_inline void tinymt32_init(tinymt32_t* random, uint32_t seed) {
     }
 }
 
+// cppcheck-suppress [unusedFunction, constParameter]
 /**
  * This function initializes the internal state array,
  * with an array of 32-bit unsigned integers used as seeds
