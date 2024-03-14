@@ -8,7 +8,7 @@ import subprocess
 sns.set_theme()
 
 
-RUN_COUNT = 10
+RUN_COUNT = 1
 
 
 def run(cmd: list[str]) -> str:
@@ -58,7 +58,8 @@ def calc_watts(secs_avg: float, joules_avg: float, no_secs_avg: float, no_joules
 
 
 def plot_cdf(data: list[float], title: str, xlabel: str, ylabel: str, filename: str):
-    fig = plt.figure(figsize=(16, 9))
+    # fig = plt.figure(figsize=(16, 9))
+    fig = plt.figure()
     ax = fig.subplots()
 
     ax.ecdf(data)

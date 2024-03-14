@@ -251,65 +251,72 @@ int main(int argc, char* argv[]) {
         return err;
     }
 
+    const int ITER_COUNT = 100;
+
     switch (algo_type) {
     case RS:
-        err = run_rs_enc(rs, &inf_symbols, &rep_symbols);
-        if (err) {
-            free(is_erased);
-            free(seeds);
-            seq_destroy(rcv_symbols);
-            seq_destroy(src_symbols);
-            rlc_destroy(rlc);
-            rs_destroy(rs);
-            return err;
+        for (int i = 0; i < ITER_COUNT; ++i) {
+            err = run_rs_enc(rs, &inf_symbols, &rep_symbols);
+            if (err) {
+                free(is_erased);
+                free(seeds);
+                seq_destroy(rcv_symbols);
+                seq_destroy(src_symbols);
+                rlc_destroy(rlc);
+                rs_destroy(rs);
+                return err;
+            }
+
+            init_rcv_symbols(src_symbols, rcv_symbols);
+            erase_symbols(rcv_symbols, t, is_erased);
+
+            err = run_rs_dec(rs, k, r, rcv_symbols, is_erased, t);
+            if (err) {
+                free(is_erased);
+                free(seeds);
+                seq_destroy(rcv_symbols);
+                seq_destroy(src_symbols);
+                rlc_destroy(rlc);
+                rs_destroy(rs);
+                return err;
+            }
         }
-
-        init_rcv_symbols(src_symbols, rcv_symbols);
-        erase_symbols(rcv_symbols, t, is_erased);
-
-        err = run_rs_dec(rs, k, r, rcv_symbols, is_erased, t);
-        if (err) {
-            free(is_erased);
-            free(seeds);
-            seq_destroy(rcv_symbols);
-            seq_destroy(src_symbols);
-            rlc_destroy(rlc);
-            rs_destroy(rs);
-            return err;
-        }
-
         break;
     case RLC:
-        err = run_rlc_enc(rlc, &inf_symbols, &rep_symbols, seeds);
-        if (err) {
-            free(is_erased);
-            free(seeds);
-            seq_destroy(rcv_symbols);
-            seq_destroy(src_symbols);
-            rlc_destroy(rlc);
-            rs_destroy(rs);
-            return err;
+        for (int i = 0; i < ITER_COUNT; ++i) {
+            rlc->current_repair_symbol = 0;
+
+            err = run_rlc_enc(rlc, &inf_symbols, &rep_symbols, seeds);
+            if (err) {
+                free(is_erased);
+                free(seeds);
+                seq_destroy(rcv_symbols);
+                seq_destroy(src_symbols);
+                rlc_destroy(rlc);
+                rs_destroy(rs);
+                return err;
+            }
+
+            init_rcv_symbols(src_symbols, rcv_symbols);
+            erase_symbols(rcv_symbols, t, is_erased);
+
+            err = run_rlc_dec(rlc, k, r, rcv_symbols, seeds, is_erased, t);
+            if (err) {
+                free(is_erased);
+                free(seeds);
+                seq_destroy(rcv_symbols);
+                seq_destroy(src_symbols);
+                rlc_destroy(rlc);
+                rs_destroy(rs);
+                return err;
+            }
         }
-
-        init_rcv_symbols(src_symbols, rcv_symbols);
-        erase_symbols(rcv_symbols, t, is_erased);
-
-        err = run_rlc_dec(rlc, k, r, rcv_symbols, seeds, is_erased, t);
-        if (err) {
-            free(is_erased);
-            free(seeds);
-            seq_destroy(rcv_symbols);
-            seq_destroy(src_symbols);
-            rlc_destroy(rlc);
-            rs_destroy(rs);
-            return err;
-        }
-
         break;
     case NO:
-        init_rcv_symbols(src_symbols, rcv_symbols);
-        erase_symbols(rcv_symbols, t, is_erased);
-
+        for (int i = 0; i < ITER_COUNT; ++i) {
+            init_rcv_symbols(src_symbols, rcv_symbols);
+            erase_symbols(rcv_symbols, t, is_erased);
+        }
         break;
     default:
         printf("ERROR: unreachable\n");
