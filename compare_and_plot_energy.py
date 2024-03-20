@@ -1,11 +1,8 @@
 import argparse
+import matplotlib
 import matplotlib.pyplot as plt
 from pathlib import Path
-import seaborn as sns
 import subprocess
-
-
-sns.set_theme()
 
 
 RUN_COUNT = 1
@@ -57,18 +54,12 @@ def calc_watts(secs_avg: float, joules_avg: float, no_secs_avg: float, no_joules
     return (joules_avg - no_joules_avg) / (secs_avg - no_secs_avg)
 
 
-def plot_cdf(data: list[float], title: str, xlabel: str, ylabel: str, filename: str):
-    # fig = plt.figure(figsize=(16, 9))
-    fig = plt.figure()
-    ax = fig.subplots()
-
-    ax.ecdf(data)
-    ax.grid(True)
+def plot_cdf(ax, data: list[float], title: str, xlabel: str):
     ax.set_title(title)
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-
-    plt.savefig(args.output / filename)
+    ax.ecdf(data)
+    ax.set_xlabel(xlabel, fontsize=16)
+    ax.grid(True)
+    # ax.legend(loc="lower right")
 
 
 if __name__ == "__main__":
@@ -106,20 +97,19 @@ if __name__ == "__main__":
         rlc_joules_arr.append(rlc_joules_avg - no_joules_avg)
         rlc_watts_arr.append(rlc_watts)
 
-    plot_cdf(list(map(lambda t: t[0] / t[1], zip(rs_secs_arr, rlc_secs_arr))),
-             "Encoding and decoding total time (k=2000, r=40)",
-             "{Reed-Solomon}/{RLC}",
-             "Probability of occurrence",
-             "ratio_secs")
+    fig, axs = plt.subplots(1, 2, figsize=(10, 5))
 
-    plot_cdf(list(map(lambda t: t[0] / t[1], zip(rs_joules_arr, rlc_joules_arr))),
-             "Encoding and decoding total energy (k=2000, r=40)",
-             "{Reed-Solomon}/{RLC}",
-             "Probability of occurrence",
-             "ratio_joules")
+    fig.suptitle("Сравнение энергоэффективности (k=2000, r=40)")
 
-    plot_cdf(list(map(lambda t: t[0] / t[1], zip(rs_watts_arr, rlc_watts_arr))),
-             "Encoding and decoding power (k=2000, r=40)",
-             "{Reed-Solomon}/{RLC}",
-             "Probability of occurrence",
-             "ratio_watts")
+    plot_cdf(axs[0],
+             list(map(lambda t: t[0] / t[1], zip(rs_joules_arr, rlc_joules_arr))),
+             "Отношение затраченной энергии (CDF)",
+             r"$\frac{E_{RS}}{E_{RLC}}$")
+
+    plot_cdf(axs[1],
+             list(map(lambda t: t[0] / t[1], zip(rs_watts_arr, rlc_watts_arr))),
+             "Отношение потребляемой мощности (CDF)",
+             r"$\frac{P_{RS}}{P_{RLC}}$")
+
+    fig.tight_layout()
+    fig.savefig(args.output / "energy_efficiency.png")
