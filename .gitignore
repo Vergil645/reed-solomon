@@ -13,6 +13,9 @@
 /html
 /latex
 
+/jupiterlab/*.png
+/jupiterlab/.ipynb_checkpoints
+
 /*.folded
 /*.perf
 /*.svg
