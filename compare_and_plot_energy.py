@@ -58,8 +58,8 @@ def plot_cdf(ax, data: list[float], title: str, xlabel: str):
     ax.set_title(title)
     ax.ecdf(data)
     ax.set_xlabel(xlabel, fontsize=16)
+    ax.set_ylabel("CDF", fontsize=12)
     ax.grid(True)
-    # ax.legend(loc="lower right")
 
 
 if __name__ == "__main__":
@@ -103,12 +103,12 @@ if __name__ == "__main__":
 
     plot_cdf(axs[0],
              list(map(lambda t: t[0] / t[1], zip(rs_joules_arr, rlc_joules_arr))),
-             "Отношение затраченной энергии (CDF)",
+             "Отношение затраченной энергии",
              r"$\frac{E_{RS}}{E_{RLC}}$")
 
     plot_cdf(axs[1],
              list(map(lambda t: t[0] / t[1], zip(rs_watts_arr, rlc_watts_arr))),
-             "Отношение потребляемой мощности (CDF)",
+             "Отношение потребляемой мощности",
              r"$\frac{P_{RS}}{P_{RLC}}$")
 
     fig.tight_layout()
