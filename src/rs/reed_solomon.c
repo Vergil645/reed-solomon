@@ -35,12 +35,21 @@ RS_t* rs_create() {
         return NULL;
     }
 
+    rs->fft = fft_create();
+    if (!rs->fft) {
+        cc_destroy(rs->cc);
+        gf_destroy(rs->gf);
+        free(rs);
+        return NULL;
+    }
+
     return rs;
 }
 
 void rs_destroy(RS_t* rs) {
     assert(rs != NULL);
 
+    fft_destroy(rs->fft);
     cc_destroy(rs->cc);
     gf_destroy(rs->gf);
     free(rs);
@@ -66,7 +75,7 @@ static int _rs_get_syndrome_poly(RS_t* rs, const symbol_seq_t* seq, const uint16
     int err;
 
     // fft_transform(rs->gf, seq, positions, syndrome_poly);
-    err = fft_transform_cycl(rs->gf, seq, positions, syndrome_poly);
+    err = fft_transform_cycl(rs->fft, rs->gf, seq, positions, syndrome_poly);
     if (err)
         return err;
 

@@ -15,6 +15,7 @@
 #include <stdint.h>
 
 #include "cyclotomic_coset.h"
+#include "fft.h"
 #include "gf65536.h"
 #include <memory/seq.h>
 
@@ -35,6 +36,7 @@
 typedef struct RS {
     GF_t* gf;
     CC_t* cc;
+    FFT_t* fft;
 } RS_t;
 
 /**

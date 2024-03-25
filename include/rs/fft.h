@@ -17,6 +17,14 @@
 #include <memory/seq.h>
 #include <memory/symbol.h>
 
+typedef struct FFT {
+    uint8_t precalc_scalar[1 << 16];
+} FFT_t;
+
+FFT_t* fft_create();
+
+void fft_destroy(FFT_t* fft);
+
 /**
  * @brief Compute a given number of first components of Discrete Fourier
  * transform of a given sequence.
@@ -35,6 +43,7 @@ void fft_transform(GF_t* gf, const symbol_seq_t* f, const uint16_t* positions, s
  * @brief Compute a given number of first components of Discrete Fourier
  * transform of a given sequence using cyclotomic FFT algorithm.
  *
+ * @param fft precalculated data.
  * @param gf Galois field data.
  * @param f sequence coefficients.
  * @param positions sequence coefficients indices.
@@ -42,7 +51,7 @@ void fft_transform(GF_t* gf, const symbol_seq_t* f, const uint16_t* positions, s
  * @return 0 on success,\n
  *         1 on memory allocation error.
  */
-int fft_transform_cycl(GF_t* gf, const symbol_seq_t* f, const uint16_t* positions,
+int fft_transform_cycl(FFT_t* fft, GF_t* gf, const symbol_seq_t* f, const uint16_t* positions,
                        symbol_seq_t* res);
 
 /**
