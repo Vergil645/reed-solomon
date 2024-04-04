@@ -19,7 +19,7 @@
 /**
  * @brief Symbol sequence data type.
  */
-typedef struct symbol_seq {
+typedef struct {
     /**
      * @brief Sequence length.
      */

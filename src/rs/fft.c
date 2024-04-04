@@ -15,8 +15,7 @@
 #include <rs/fft.h>
 
 // cppcheck-suppress unusedFunction
-void __attribute_maybe_unused__ fft_transform(GF_t* gf, const symbol_seq_t* f,
-                                              const uint16_t* positions, symbol_seq_t* res) {
+void fft_transform(GF_t* gf, const symbol_seq_t* f, const uint16_t* positions, symbol_seq_t* res) {
     assert(gf != NULL);
     assert(f != NULL);
     assert(positions != NULL);
@@ -48,9 +47,6 @@ int fft_transform_cycl(GF_t* gf, const symbol_seq_t* f, const uint16_t* position
 
     symbol_seq_t* u;
     size_t symbol_size = f->symbol_size;
-    element_t coef;
-    uint16_t* normal_repr;
-    uint16_t idx;
 
     bool* calculated = (bool*)calloc(res->length, sizeof(bool));
     if (!calculated)
@@ -66,21 +62,13 @@ int fft_transform_cycl(GF_t* gf, const symbol_seq_t* f, const uint16_t* position
         if (calculated[s])
             continue;
 
-        uint8_t m = 1;
-        uint8_t m_log = 0;
-        while (s != (uint16_t)(((uint32_t)s << m) % N)) {
-            m <<= 1;
-            ++m_log;
-        }
-        assert(m <= CC_MAX_COSET_SIZE);
-
-        normal_repr = gf->normal_repr_by_subfield[m_log];
+        uint8_t m = cc_get_coset_size(s);
 
         for (uint8_t t = 0; t < m; ++t)
             memset((void*)u->symbols[t]->data, 0, symbol_size);
 
         for (uint16_t i = 0; i < f->length; ++i) {
-            uint16_t repr = normal_repr[(s * positions[i]) % N];
+            uint16_t repr = gf_get_normal_repr(gf, m, (s * positions[i]) % N);
 
             for (uint8_t t = 0; t < m; ++t) {
                 if (repr & (1 << t))
@@ -88,13 +76,13 @@ int fft_transform_cycl(GF_t* gf, const symbol_seq_t* f, const uint16_t* position
             }
         }
 
-        idx = s;
+        uint16_t idx = s;
         for (uint8_t j = 0; j < m; ++j) {
             if (idx < res->length) {
                 memset((void*)res->symbols[idx]->data, 0, symbol_size);
 
                 for (uint8_t t = 0; t < m; ++t) {
-                    coef = g_normal_basis_by_subfield[m_log][(j + t) % m];
+                    element_t coef = gf_get_normal_basis_element(gf, m, (j + t) % m);
                     gf_madd(gf, (void*)res->symbols[idx]->data, coef, (void*)u->symbols[t]->data,
                             symbol_size);
                 }
@@ -115,9 +103,8 @@ int fft_transform_cycl(GF_t* gf, const symbol_seq_t* f, const uint16_t* position
 }
 
 // cppcheck-suppress unusedFunction
-void __attribute_maybe_unused__ fft_partial_transform(GF_t* gf, const symbol_seq_t* f,
-                                                      const uint16_t* components,
-                                                      symbol_seq_t* res) {
+void fft_partial_transform(GF_t* gf, const symbol_seq_t* f, const uint16_t* components,
+                           symbol_seq_t* res) {
     assert(gf != NULL);
     assert(f != NULL);
     assert(components != NULL);
@@ -151,9 +138,7 @@ int fft_partial_transform_cycl(GF_t* gf, const symbol_seq_t* f, const coset_t* c
 
     symbol_seq_t* u;
     size_t symbol_size = f->symbol_size;
-    uint16_t* normal_repr;
     uint16_t idx = 0;
-    element_t coef;
 
     u = seq_create(CC_MAX_COSET_SIZE, symbol_size);
     if (!u)
@@ -164,18 +149,12 @@ int fft_partial_transform_cycl(GF_t* gf, const symbol_seq_t* f, const coset_t* c
 
         uint16_t s = N - coset.leader;
         uint8_t m = coset.size;
-        uint8_t m_log = 0;
-        while (m != (1 << m_log))
-            ++m_log;
-        assert(m_log <= 4);
-
-        normal_repr = gf->normal_repr_by_subfield[m_log];
 
         for (uint8_t t = 0; t < m; ++t)
             memset((void*)u->symbols[t]->data, 0, symbol_size);
 
         for (uint16_t i = 0; i < f->length; ++i) {
-            uint16_t repr = normal_repr[(s * i) % N];
+            uint16_t repr = gf_get_normal_repr(gf, m, (s * i) % N);
 
             for (uint8_t t = 0; t < m; ++t) {
                 if (repr & (1 << t))
@@ -189,7 +168,7 @@ int fft_partial_transform_cycl(GF_t* gf, const symbol_seq_t* f, const coset_t* c
             memset((void*)res->symbols[idx]->data, 0, symbol_size);
 
             for (uint8_t t = 0; t < m; ++t) {
-                coef = g_normal_basis_by_subfield[m_log][(j + t) % m];
+                element_t coef = gf_get_normal_basis_element(gf, m, (j + t) % m);
                 gf_madd(gf, (void*)res->symbols[idx]->data, coef, (void*)u->symbols[t]->data,
                         symbol_size);
             }

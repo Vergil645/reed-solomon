@@ -18,7 +18,7 @@
 /**
  * @brief Symbol data type.
  */
-typedef struct symbol {
+typedef struct {
     /**
      * @brief Symbol data.
      */

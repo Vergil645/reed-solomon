@@ -65,25 +65,22 @@ CC_t* cc_create() {
     for (uint8_t i = 1; i < CC_COSET_SIZES_CNT; ++i)
         cc->leaders[i] = cc->leaders[i - 1] + g_leaders_cnt[i - 1];
 
-    bool* processed;
-    uint16_t** leaders = cc->leaders;
-    uint16_t idx[CC_COSET_SIZES_CNT] = {0}; // idx[i] - index in leaders[i]
-    uint16_t cur_coset_elem;
-    uint8_t coset_size;
-    uint8_t i;
-
-    processed = (bool*)calloc(N, sizeof(bool));
+    bool* processed = (bool*)calloc(N, sizeof(bool));
     if (!processed) {
         free(cc);
         return NULL;
     }
+
+    uint16_t** leaders = cc->leaders;
+    uint16_t idx[CC_COSET_SIZES_CNT] = {0}; // idx[i] - index in leaders[i]
 
     for (uint16_t s = 0; s < N; ++s) {
         if (processed[s])
             continue;
         processed[s] = true;
 
-        cur_coset_elem = NEXT_COSET_ELEMENT(s);
+        uint16_t cur_coset_elem = NEXT_COSET_ELEMENT(s);
+        uint8_t coset_size;
         for (coset_size = 1; coset_size <= CC_MAX_COSET_SIZE; ++coset_size) {
             if (cur_coset_elem == s)
                 break;
@@ -91,7 +88,7 @@ CC_t* cc_create() {
             cur_coset_elem = NEXT_COSET_ELEMENT(cur_coset_elem);
         }
 
-        i = 0;
+        uint8_t i = 0;
         while (i < CC_COSET_SIZES_CNT && (1 << i) != coset_size)
             ++i;
 
@@ -118,6 +115,16 @@ void cc_destroy(CC_t* cc) {
     free(cc);
 }
 
+uint8_t cc_get_coset_size(uint16_t leader) {
+    uint8_t m = 1; // cylotomic coset size
+
+    while (leader != (uint16_t)(((uint32_t)leader << m) % N))
+        m <<= 1;
+    assert(m <= CC_MAX_COSET_SIZE);
+
+    return m;
+}
+
 /**
  * @brief Compute a number of cyclotomic cosets the union of which has a given
  * size.
@@ -127,11 +134,10 @@ void cc_destroy(CC_t* cc) {
  */
 static uint16_t _cc_get_cosets_cnt(uint16_t r) {
     uint16_t cosets_cnt = 0;
-    uint16_t cosets_cnt_inc;
 
     for (uint8_t i = CC_COSET_SIZES_CNT - 1; r != 0; --i) {
         if (r > g_thresholds[i]) {
-            cosets_cnt_inc = (r - g_thresholds[i] + (1 << i) - 1) >> i;
+            uint16_t cosets_cnt_inc = (r - g_thresholds[i] + (1 << i) - 1) >> i;
             cosets_cnt += cosets_cnt_inc;
             r -= cosets_cnt_inc << i;
         }

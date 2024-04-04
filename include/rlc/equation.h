@@ -9,7 +9,7 @@
 
 #define ID_NONE 0xffu
 
-typedef struct equation {
+typedef struct {
     uint16_t pivot; // id of the pivot (i.e. first non-zero coefficient in the
                     // equation)
     uint16_t last_non_zero_id;

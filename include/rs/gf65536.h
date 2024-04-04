@@ -26,6 +26,8 @@
  */
 #define GF_PRIMITIVE_POLY 65581
 
+#define GF_NORMAL_BASES_FIRST_IDX_BY_M(_m) ((_m)-1)
+
 /**
  * @brief Galois field element type.
  */
@@ -37,26 +39,11 @@ typedef uint16_t element_t;
 typedef uint32_t poly_t;
 
 /**
- * @brief Normal basises of subfields GF(2^m), where m - cyclotomic coset sizes.
- * @details g_normal_basis_by_subfield[i][j] - j-th basis element of
- * \f$GF(2^{2^i})\f$ subfield (i=0,...,4).
- */
-static __attribute_maybe_unused__ element_t
-    g_normal_basis_by_subfield[CC_COSET_SIZES_CNT][CC_MAX_COSET_SIZE] = {
-        [0] = {1},
-        [1] = {44234, 44235},
-        [2] = {10800, 47860, 34555, 5694},
-        [3] = {16402, 53598, 44348, 63986, 22060, 64366, 6088, 32521},
-        [4] = {2048, 2880, 7129, 30616, 2643, 6897, 29685, 7378, 30100, 2743, 20193, 36223, 24055,
-               41458, 41014, 61451},
-};
-
-/**
  * @brief Galois field data.
  * @details Field definition: \f$GF(2)[x] / \left<PRIMITIVE\_POLY\right>\f$.\n
  * Primitive element: \f$\alpha = x\f$.
  */
-typedef struct GF_t {
+typedef struct {
     /**
      * @brief Primitive element powers. Power can belongs to range [0; 2*N-2];
      * @details \f$pow\_table_i = \alpha^i\f$
@@ -70,11 +57,16 @@ typedef struct GF_t {
     uint16_t log_table[GF_FIELD_SIZE];
 
     /**
-     * @brief Coefficients in normal basis of subfields GF(2^m).
-     * @details j-th bit of normal_repr_by_subfield[i][d] - j-th coefficient in
-     * normal basis of \f$GF(2^{2^i})\f$ subfield of element \f$\alpha^d\f$.
+     * @brief Normal bases of all GF(65536) subfields.
      */
-    uint16_t* normal_repr_by_subfield[CC_COSET_SIZES_CNT];
+    element_t normal_bases[CC_NORMAL_BASES_ELEMENTS];
+
+    /**
+     * @brief Coefficients in normal basis of subfields GF(2^m).
+     * @details j-th bit of normal_repr_by_subfield[m][d] - j-th coefficient in
+     * normal basis of \f$GF(2^m)\f$ subfield of element \f$\alpha^d\f$.
+     */
+    uint16_t* normal_repr_by_subfield[CC_MAX_COSET_SIZE + 1];
 
     /**
      * @brief .normal_repr_by_subfield memory.
@@ -96,6 +88,27 @@ GF_t* gf_create();
  * @param gf Galois field data.
  */
 void gf_destroy(GF_t* gf);
+
+/**
+ * @brief Return i-th element of the normal basis of the subfield GF(2^m)
+ *
+ * @param gf Galois field data.
+ * @param m subfield power.
+ * @param i element index.
+ * @return normal basis element.
+ * @warning pre: i < m
+ */
+element_t gf_get_normal_basis_element(GF_t* gf, uint8_t m, uint8_t i);
+
+/**
+ * @brief Return coefficients of alpha^d in normal basis of subfield GF(2^m).
+ *
+ * @param gf Galois field data.
+ * @param m subfield power.
+ * @param d primitive element power.
+ * @return normal basis representation.
+ */
+uint16_t gf_get_normal_repr(GF_t* gf, uint8_t m, uint16_t d);
 
 /**
  * @brief Compute multiplication of 2 elements in Galois field.

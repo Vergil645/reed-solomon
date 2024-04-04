@@ -65,7 +65,6 @@ static int _rs_get_syndrome_poly(RS_t* rs, const symbol_seq_t* seq, const uint16
 
     int err;
 
-    // fft_transform(rs->gf, seq, positions, syndrome_poly);
     err = fft_transform_cycl(rs->gf, seq, positions, syndrome_poly);
     if (err)
         return err;
@@ -281,13 +280,10 @@ static int _rs_get_repair_symbols(const RS_t* rs, const element_t* locator_poly,
     uint16_t r = rep_symbols->length;
     int err;
 
-    // fft_partial_transform(gf, evaluator_poly, rep_symbols,
-    // rep_positions);
     err = fft_partial_transform_cycl(gf, evaluator_poly, rep_cosets, rep_cosets_cnt, rep_symbols);
     if (err)
         return err;
 
-    // TODO: implement deffered Forney scalling
     for (uint16_t i = 0; i < r; ++i) {
         element_t coef = _rs_get_forney_coef(rs, locator_poly, r, rep_positions[i]);
         gf_mul(gf, (void*)rep_symbols->symbols[i]->data, coef, symbol_size);
@@ -499,7 +495,7 @@ int rs_restore_symbols(RS_t* rs, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbo
     inf_positions = positions;
     rep_positions = positions + k;
 
-    erased_positions = (element_t*)calloc(t, sizeof(uint16_t));
+    erased_positions = (uint16_t*)calloc(t, sizeof(uint16_t));
     if (!erased_positions) {
         free(positions);
         free(_cosets);

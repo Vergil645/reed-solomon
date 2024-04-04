@@ -14,7 +14,7 @@
 
 #include <memory/seq.h>
 
-typedef struct RLC {
+typedef struct {
     uint32_t current_repair_symbol;
     uint8_t* inv_table;
     uint8_t** mul_table;

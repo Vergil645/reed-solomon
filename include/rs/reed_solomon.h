@@ -21,7 +21,7 @@
 /**
  * @brief Maximum number of cyclotomic coset locator polynomial coefficients.
  */
-#define RS_COSET_LOCATOR_MAX_LEN 17
+#define RS_COSET_LOCATOR_MAX_LEN (CC_MAX_COSET_SIZE + 1)
 
 /**
  * @brief Return code for cases when erases cannot be restored due to code
@@ -32,7 +32,7 @@
 /**
  * @brief Context data.
  */
-typedef struct RS {
+typedef struct {
     GF_t* gf;
     CC_t* cc;
 } RS_t;

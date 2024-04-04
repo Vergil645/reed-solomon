@@ -29,6 +29,11 @@
 #define CC_MAX_COSET_SIZE 16
 
 /**
+ * @brief Number of elements in normal bases of all GF(65536) subfields.
+ */
+#define CC_NORMAL_BASES_ELEMENTS 31
+
+/**
  * @brief Number of leaders of cyclotomic cosets of size 1.
  */
 #define CC_LEADERS_1_CNT 1
@@ -90,7 +95,7 @@
 /**
  * @brief Cyclotomic coset over GF(2) modulo N.
  */
-typedef struct coset {
+typedef struct {
     uint16_t leader;
     uint8_t size;
 } coset_t;
@@ -98,7 +103,7 @@ typedef struct coset {
 /**
  * @brief Cyclotomic cosets over GF(2) modulo N pre-computed data.
  */
-typedef struct CC {
+typedef struct {
     /**
      * @brief Leaders of cyclotomic cosets.
      * @details leaders[i] - leaders of cyclotomic cosets of size \f$2^i\f$.\n
@@ -127,6 +132,14 @@ CC_t* cc_create();
  * @param cc cyclotomic cosets data.
  */
 void cc_destroy(CC_t* cc);
+
+/**
+ * @brief Return size of the cyclotomic coset with the given leader.
+ *
+ * @param leader cyclotomic coset leader.
+ * @return cyclotomic coset size.
+ */
+uint8_t cc_get_coset_size(uint16_t leader);
 
 /**
  * @brief Estimate upper limits on the number of cyclotomic cosets that will be
