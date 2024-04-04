@@ -53,8 +53,7 @@ void rs_destroy(RS_t* rs) {
  * @param seq symbol sequence.
  * @param positions symbol positions.
  * @param syndrome_poly where to place the result.
- * @return 0 on success,\n
- *         !0 on error.
+ * @return 0 on success, !0 on error.
  */
 static int _rs_get_syndrome_poly(RS_t* rs, const symbol_seq_t* seq, const uint16_t* positions,
                                  symbol_seq_t* syndrome_poly) {
@@ -104,9 +103,8 @@ static void _rs_get_locator_poly(const RS_t* rs, const uint16_t* positions, uint
 
 /**
  * @brief Compute repair symbols locator polynomial.
- * @details All locator polynomial coefficients will belongs to GF(2) subfield
- * ({0, 1}) of GF(65536). Locator polynomial will have degree equal to number of
- * repair symbols.
+ * @details All locator polynomial coefficients will belongs to GF(2) subfield ({0, 1}) of GF(65536). Locator polynomial
+ * will have degree equal to number of repair symbols.
  *
  * @param rs context object.
  * @param r number of repair symbols.
@@ -147,8 +145,7 @@ static void _rs_get_rep_symbols_locator_poly(const RS_t* rs, uint16_t r, const c
         for (uint16_t i = 1; i < coset.size; ++i)
             coset_elements[i] = NEXT_COSET_ELEMENT(coset_elements[i - 1]);
 
-        _rs_get_locator_poly(rs, coset_elements, coset.size, coset_locator_poly,
-                             RS_COSET_LOCATOR_MAX_LEN);
+        _rs_get_locator_poly(rs, coset_elements, coset.size, coset_locator_poly, RS_COSET_LOCATOR_MAX_LEN);
 
 #ifndef NDEBUG
         for (uint16_t _i = 0; _i <= coset.size; ++_i)
@@ -186,8 +183,7 @@ static void _rs_get_rep_symbols_locator_poly(const RS_t* rs, uint16_t r, const c
  * @param pos symbol position.
  * @return Forney coefficient.
  */
-static element_t _rs_get_forney_coef(const RS_t* rs, const element_t* locator_poly, uint16_t d,
-                                     uint16_t pos) {
+static element_t _rs_get_forney_coef(const RS_t* rs, const element_t* locator_poly, uint16_t d, uint16_t pos) {
     assert(rs != NULL);
     assert(locator_poly != NULL);
 
@@ -214,16 +210,15 @@ static element_t _rs_get_forney_coef(const RS_t* rs, const element_t* locator_po
 }
 
 /**
- * @brief Compute evaluator polynomial modulo x^t (t - number of repair symbols
- * or erasures).
+ * @brief Compute evaluator polynomial modulo x^t (t - number of repair symbols or erasures).
  *
  * @param rs context object.
  * @param syndrome_poly information symbols syndrome polynomial (deg == t - 1).
  * @param locator_poly repair symbols locator polynomial (deg == t).
  * @param evaluator_poly where to place the result.
  */
-static void _rs_get_evaluator_poly(const RS_t* rs, const symbol_seq_t* syndrome_poly,
-                                   const element_t* locator_poly, symbol_seq_t* evaluator_poly) {
+static void _rs_get_evaluator_poly(const RS_t* rs, const symbol_seq_t* syndrome_poly, const element_t* locator_poly,
+                                   symbol_seq_t* evaluator_poly) {
     assert(rs != NULL);
     assert(syndrome_poly != NULL);
     assert(locator_poly != NULL);
@@ -245,8 +240,8 @@ static void _rs_get_evaluator_poly(const RS_t* rs, const symbol_seq_t* syndrome_
             continue;
 
         for (uint16_t j = 0; j < r - i; ++j)
-            gf_madd(gf, (void*)evaluator_poly->symbols[i + j]->data, coef,
-                    (void*)syndrome_poly->symbols[j]->data, symbol_size);
+            gf_madd(gf, (void*)evaluator_poly->symbols[i + j]->data, coef, (void*)syndrome_poly->symbols[j]->data,
+                    symbol_size);
     }
 }
 
@@ -260,12 +255,10 @@ static void _rs_get_evaluator_poly(const RS_t* rs, const symbol_seq_t* syndrome_
  * @param rep_cosets repair symbol positions in form of cyclotomic cosets union.
  * @param rep_cosets_cnt number of repair symbol cyclotomic cosets.
  * @param rep_symbols where to place the result.
- * @return 0 on success,\n
- *         !0 on error.
+ * @return 0 on success, !0 on error.
  */
-static int _rs_get_repair_symbols(const RS_t* rs, const element_t* locator_poly,
-                                  const symbol_seq_t* evaluator_poly, const uint16_t* rep_positions,
-                                  const coset_t* rep_cosets, uint16_t rep_cosets_cnt,
+static int _rs_get_repair_symbols(const RS_t* rs, const element_t* locator_poly, const symbol_seq_t* evaluator_poly,
+                                  const uint16_t* rep_positions, const coset_t* rep_cosets, uint16_t rep_cosets_cnt,
                                   symbol_seq_t* rep_symbols) {
     assert(rs != NULL);
     assert(locator_poly != NULL);
@@ -304,8 +297,8 @@ static int _rs_get_repair_symbols(const RS_t* rs, const element_t* locator_poly,
  * @param rcv_symbols received symbols, restored symbols will be written here.
  */
 static void _rs_restore_erased(const RS_t* rs, uint16_t k, const element_t* locator_poly,
-                               const symbol_seq_t* evaluator_poly, const uint16_t* positions,
-                               const bool* is_erased, symbol_seq_t* rcv_symbols) {
+                               const symbol_seq_t* evaluator_poly, const uint16_t* positions, const bool* is_erased,
+                               symbol_seq_t* rcv_symbols) {
     assert(rs != NULL);
     assert(locator_poly != NULL);
     assert(evaluator_poly != NULL);
@@ -336,14 +329,13 @@ static void _rs_restore_erased(const RS_t* rs, uint16_t k, const element_t* loca
 
         for (uint16_t i = 0; i < t; ++i) {
             coef = gf_mul_ee(gf, forney_coef, pow_table[(i * j) % N]);
-            gf_madd(gf, (void*)rcv_symbols->symbols[id]->data, coef,
-                    (void*)evaluator_poly->symbols[i]->data, symbol_size);
+            gf_madd(gf, (void*)rcv_symbols->symbols[id]->data, coef, (void*)evaluator_poly->symbols[i]->data,
+                    symbol_size);
         }
     }
 }
 
-int rs_generate_repair_symbols(RS_t* rs, const symbol_seq_t* inf_symbols,
-                               symbol_seq_t* rep_symbols) {
+int rs_generate_repair_symbols(RS_t* rs, const symbol_seq_t* inf_symbols, symbol_seq_t* rep_symbols) {
     assert(rs != NULL);
     assert(inf_symbols != NULL);
     assert(rep_symbols != NULL);
@@ -409,8 +401,7 @@ int rs_generate_repair_symbols(RS_t* rs, const symbol_seq_t* inf_symbols,
         return 1;
     }
 
-    cc_select_cosets(cc, k, r, inf_cosets, inf_max_cnt, &inf_cosets_cnt, rep_cosets, rep_max_cnt,
-                     &rep_cosets_cnt);
+    cc_select_cosets(cc, k, r, inf_cosets, inf_max_cnt, &inf_cosets_cnt, rep_cosets, rep_max_cnt, &rep_cosets_cnt);
 
     cc_cosets_to_positions(inf_cosets, inf_cosets_cnt, inf_positions, k);
     cc_cosets_to_positions(rep_cosets, rep_cosets_cnt, rep_positions, r);
@@ -429,8 +420,8 @@ int rs_generate_repair_symbols(RS_t* rs, const symbol_seq_t* inf_symbols,
 
     _rs_get_evaluator_poly(rs, syndrome_poly, locator_poly, evaluator_poly);
 
-    err = _rs_get_repair_symbols(rs, locator_poly, evaluator_poly, rep_positions, rep_cosets,
-                                 rep_cosets_cnt, rep_symbols);
+    err = _rs_get_repair_symbols(rs, locator_poly, evaluator_poly, rep_positions, rep_cosets, rep_cosets_cnt,
+                                 rep_symbols);
     if (err) {
         seq_destroy(evaluator_poly);
         seq_destroy(syndrome_poly);
@@ -449,8 +440,7 @@ int rs_generate_repair_symbols(RS_t* rs, const symbol_seq_t* inf_symbols,
     return 0;
 }
 
-int rs_restore_symbols(RS_t* rs, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbols,
-                       const bool* is_erased, uint16_t t) {
+int rs_restore_symbols(RS_t* rs, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbols, const bool* is_erased, uint16_t t) {
     assert(rs != NULL);
     assert(rcv_symbols != NULL);
     assert(is_erased != NULL);
@@ -529,8 +519,7 @@ int rs_restore_symbols(RS_t* rs, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbo
         return 1;
     }
 
-    cc_select_cosets(cc, k, r, inf_cosets, inf_max_cnt, &inf_cosets_cnt, rep_cosets, rep_max_cnt,
-                     &rep_cosets_cnt);
+    cc_select_cosets(cc, k, r, inf_cosets, inf_max_cnt, &inf_cosets_cnt, rep_cosets, rep_max_cnt, &rep_cosets_cnt);
 
     cc_cosets_to_positions(inf_cosets, inf_cosets_cnt, inf_positions, k);
     cc_cosets_to_positions(rep_cosets, rep_cosets_cnt, rep_positions, r);

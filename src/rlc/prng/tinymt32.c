@@ -38,8 +38,7 @@ struct TINYMT32_T {
 typedef struct TINYMT32_T tinymt32_t;
 
 static __always_inline void tinymt32_init(tinymt32_t* random, uint32_t seed);
-static __always_inline void tinymt32_init_by_array(tinymt32_t* random, uint32_t init_key[],
-                                                   int key_length);
+static __always_inline void tinymt32_init_by_array(tinymt32_t* random, uint32_t init_key[], int key_length);
 
 #if defined(__GNUC__)
 // cppcheck-suppress unusedFunction
@@ -48,9 +47,7 @@ static __always_inline void tinymt32_init_by_array(tinymt32_t* random, uint32_t 
  * @param random not used
  * @return always 127
  */
-__always_inline static int tinymt32_get_mexp(tinymt32_t* random __attribute__((unused))) {
-    return TINYMT32_MEXP;
-}
+__always_inline static int tinymt32_get_mexp(tinymt32_t* random __attribute__((unused))) { return TINYMT32_MEXP; }
 
 /**
  * This function changes internal state of tinymt32.
@@ -112,7 +109,8 @@ __always_inline static float tinymt32_temper_conv(tinymt32_t* random) {
     t1 = random->status[0] + (random->status[2] >> TINYMT32_SH8);
 #endif
     t0 ^= t1;
-    conv.u = ((t0 ^ (-((int32_t)(t1 & 1)) & random->tmat)) >> 9) | UINT32_C(0x3f800000); // cppcheck-suppress integerOverflow
+    conv.u =
+        ((t0 ^ (-((int32_t)(t1 & 1)) & random->tmat)) >> 9) | UINT32_C(0x3f800000); // cppcheck-suppress integerOverflow
     return conv.f;
 }
 
@@ -136,7 +134,8 @@ __always_inline static float tinymt32_temper_conv_open(tinymt32_t* random) {
     t1 = random->status[0] + (random->status[2] >> TINYMT32_SH8);
 #endif
     t0 ^= t1;
-    conv.u = ((t0 ^ (-((int32_t)(t1 & 1)) & random->tmat)) >> 9) | UINT32_C(0x3f800001); // cppcheck-suppress integerOverflow
+    conv.u =
+        ((t0 ^ (-((int32_t)(t1 & 1)) & random->tmat)) >> 9) | UINT32_C(0x3f800001); // cppcheck-suppress integerOverflow
     return conv.f;
 }
 
@@ -251,9 +250,7 @@ __always_inline static double tinymt32_generate_32double(tinymt32_t* random) {
  * @param x 32-bit integer
  * @return 32-bit integer
  */
-static __always_inline uint32_t ini_func1(uint32_t x) {
-    return (x ^ (x >> 27)) * UINT32_C(1664525);
-}
+static __always_inline uint32_t ini_func1(uint32_t x) { return (x ^ (x >> 27)) * UINT32_C(1664525); }
 
 /**
  * This function represents a function used in the initialization
@@ -261,17 +258,15 @@ static __always_inline uint32_t ini_func1(uint32_t x) {
  * @param x 32-bit integer
  * @return 32-bit integer
  */
-static __always_inline uint32_t ini_func2(uint32_t x) {
-    return (x ^ (x >> 27)) * UINT32_C(1566083941);
-}
+static __always_inline uint32_t ini_func2(uint32_t x) { return (x ^ (x >> 27)) * UINT32_C(1566083941); }
 
 /**
  * This function certificate the period of 2^127-1.
  * @param random tinymt state vector.
  */
 static __always_inline void period_certification(tinymt32_t* random) {
-    if ((random->status[0] & TINYMT32_MASK) == 0 && random->status[1] == 0 &&
-        random->status[2] == 0 && random->status[3] == 0) {
+    if ((random->status[0] & TINYMT32_MASK) == 0 && random->status[1] == 0 && random->status[2] == 0 &&
+        random->status[3] == 0) {
         random->status[0] = 'T';
         random->status[1] = 'I';
         random->status[2] = 'N';
@@ -291,8 +286,8 @@ static __always_inline void tinymt32_init(tinymt32_t* random, uint32_t seed) {
     random->status[2] = random->mat2;
     random->status[3] = random->tmat;
     for (int i = 1; i < MIN_LOOP; i++) {
-        random->status[i & 3] ^= i + UINT32_C(1812433253) * (random->status[(i - 1) & 3] ^
-                                                             (random->status[(i - 1) & 3] >> 30));
+        random->status[i & 3] ^=
+            i + UINT32_C(1812433253) * (random->status[(i - 1) & 3] ^ (random->status[(i - 1) & 3] >> 30));
     }
     period_certification(random);
     for (int i = 0; i < PRE_LOOP; i++) {
@@ -308,8 +303,7 @@ static __always_inline void tinymt32_init(tinymt32_t* random, uint32_t seed) {
  * @param init_key the array of 32-bit integers, used as a seed.
  * @param key_length the length of init_key.
  */
-static __always_inline void tinymt32_init_by_array(tinymt32_t* random, uint32_t init_key[],
-                                                   int key_length) {
+static __always_inline void tinymt32_init_by_array(tinymt32_t* random, uint32_t init_key[], int key_length) {
     const int lag = 1;
     const int mid = 1;
     const int size = 4;

@@ -44,8 +44,8 @@ void rlc_destroy(RLC_t* rlc);
  * @return 0 on success,\n
  *         1 on memory allocation error.
  */
-int rlc_generate_repair_symbols(RLC_t* rlc, const symbol_seq_t* inf_symbols,
-                                const symbol_seq_t* rep_symbols, uint32_t* seeds);
+int rlc_generate_repair_symbols(RLC_t* rlc, const symbol_seq_t* inf_symbols, const symbol_seq_t* rep_symbols,
+                                uint32_t* seeds);
 
 /**
  * @brief Restore erased symbols. Assume that rcv_symbols[i] = 0 for erased i.
@@ -61,7 +61,7 @@ int rlc_generate_repair_symbols(RLC_t* rlc, const symbol_seq_t* inf_symbols,
  *         1 on memory allocation error,\n
  *         or RS_ERR_CANNOT_RESTORE.
  */
-int rlc_restore_symbols(RLC_t* rlc, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbols,
-                        const uint32_t* seeds, const bool* is_erased, uint16_t t);
+int rlc_restore_symbols(RLC_t* rlc, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbols, const uint32_t* seeds,
+                        const bool* is_erased, uint16_t t);
 
 #endif

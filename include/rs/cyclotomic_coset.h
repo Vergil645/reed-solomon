@@ -1,8 +1,7 @@
 /**
  * @file cyclotomic_coset.h
  * @author Matvey Kolesov (kolesov645@gmail.com)
- * @brief Contains functions that uses cyclotomic cosets over GF(2) modulo N
- * (65535).
+ * @brief Contains functions that uses cyclotomic cosets over GF(2) modulo N (N = 65535).
  * @date 2024-01-17
  *
  * @copyright Copyright (c) 2024
@@ -121,8 +120,7 @@ typedef struct {
 /**
  * @brief Create cyclotomic cosets data structure.
  *
- * @return pointer to created cyclotomic cosets data structure on success and
- * NULL otherwise.
+ * @return pointer to created cyclotomic cosets data structure on success and NULL otherwise.
  */
 CC_t* cc_create();
 
@@ -142,8 +140,7 @@ void cc_destroy(CC_t* cc);
 uint8_t cc_get_coset_size(uint16_t leader);
 
 /**
- * @brief Estimate upper limits on the number of cyclotomic cosets that will be
- * selected by cc_select_cosets(...).
+ * @brief Estimate upper limits on the number of cyclotomic cosets that will be selected by cc_select_cosets(...).
  *
  * @param k number of information symbols.
  * @param r number of repair symbols.
@@ -153,23 +150,21 @@ uint8_t cc_get_coset_size(uint16_t leader);
 void cc_estimate_cosets_cnt(uint16_t k, uint16_t r, uint16_t* inf_max_cnt, uint16_t* rep_max_cnt);
 
 /**
- * @brief Select cyclotomic cosets over GF(2) modulo N that form information and
- * repair symbol positions in virtual codeword.
+ * @brief Select cyclotomic cosets over GF(2) modulo N that form information and repair symbol positions in a virtual
+ * codeword.
  *
  * @param cc cyclotomic cosets data.
  * @param k number of information symbols.
  * @param r number of repair symbols.
  * @param inf_cosets where to place information symbol cosets.
  * @param inf_max_cnt max number of elements that can be written to inf_leaders.
- * @param inf_cosets_cnt where to place number of written information symbol
- * cosets.
+ * @param inf_cosets_cnt where to place number of written information symbol cosets.
  * @param rep_cosets where to place repair symbol cosets.
  * @param rep_max_cnt max number of elements that can be written to rep_leaders.
  * @param rep_cosets_cnt where to place number of written repair symbol cosets.
  */
 void cc_select_cosets(CC_t* cc, uint16_t k, uint16_t r, coset_t* inf_cosets, uint16_t inf_max_cnt,
-                      uint16_t* inf_cosets_cnt, coset_t* rep_cosets, uint16_t rep_max_cnt,
-                      uint16_t* rep_cosets_cnt);
+                      uint16_t* inf_cosets_cnt, coset_t* rep_cosets, uint16_t rep_max_cnt, uint16_t* rep_cosets_cnt);
 
 /**
  * @brief Convert list of cyclotomic cosets to list of symbol positions.
@@ -179,7 +174,6 @@ void cc_select_cosets(CC_t* cc, uint16_t k, uint16_t r, coset_t* inf_cosets, uin
  * @param positions where to place symbol positions.
  * @param positions_cnt required number of positions to be written.
  */
-void cc_cosets_to_positions(const coset_t* cosets, uint16_t cosets_cnt, uint16_t* positions,
-                            uint16_t positions_cnt);
+void cc_cosets_to_positions(const coset_t* cosets, uint16_t cosets_cnt, uint16_t* positions, uint16_t positions_cnt);
 
 #endif

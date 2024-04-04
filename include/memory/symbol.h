@@ -1,8 +1,7 @@
 /**
  * @file symbol.h
  * @author Matvey Kolesov (kolesov645@gmail.com)
- * @brief Contains symbol_t definition and functions for interaction with
- * symbols.
+ * @brief Contains symbol_t definition and functions for interaction with symbols.
  * @date 2024-01-20
  *
  * @copyright Copyright (c) 2024

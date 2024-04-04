@@ -160,8 +160,7 @@ void gf_add(void* a, const void* b, size_t symbol_size) {
     element_t* data_1 = (element_t*)data64_1;
     element_t* data_2 = (element_t*)data64_2;
 
-    for (const element_t* end_1 = (element_t*)a + symbol_size / sizeof(element_t); data_1 != end_1;
-         ++data_1, ++data_2)
+    for (const element_t* end_1 = (element_t*)a + symbol_size / sizeof(element_t); data_1 != end_1; ++data_1, ++data_2)
         *data_1 ^= *data_2;
 }
 
@@ -207,8 +206,7 @@ void gf_madd(GF_t* gf, void* a, element_t coef, const void* b, size_t symbol_siz
 
     pow_table_shifted = gf->pow_table + log_table[coef];
 
-    for (const element_t* end_1 = data_1 + symbol_size / sizeof(element_t); data_1 != end_1;
-         ++data_1, ++data_2) {
+    for (const element_t* end_1 = data_1 + symbol_size / sizeof(element_t); data_1 != end_1; ++data_1, ++data_2) {
         element_t val_2 = *data_2;
         if (val_2 != 0)
             *data_1 ^= pow_table_shifted[log_table[val_2]];

@@ -18,8 +18,7 @@ void assign_mul(uint8_t** array);
 
 void assign_inv(uint8_t* array);
 
-void gf256_symbol_add_scaled(void* symbol1, uint8_t coef, const void* symbol2, uint32_t symbol_size,
-                             uint8_t** mul);
+void gf256_symbol_add_scaled(void* symbol1, uint8_t coef, const void* symbol2, uint32_t symbol_size, uint8_t** mul);
 
 void gf256_symbol_mul(void* symbol1, uint8_t coef, uint32_t symbol_size, uint8_t** mul);
 

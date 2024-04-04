@@ -10,12 +10,12 @@
 #define SEED 234546127
 #define TESTS_CNT 100
 
-#define TEST_WRAPPER(_rs, _symbol_size, _k, _r, _t)                                                \
-    do {                                                                                           \
-        if (test((_rs), (_symbol_size), (_k), (_r), (_t))) {                                       \
-            rs_destroy((_rs));                                                                     \
-            return 1;                                                                              \
-        }                                                                                          \
+#define TEST_WRAPPER(_rs, _symbol_size, _k, _r, _t)                                                                    \
+    do {                                                                                                               \
+        if (test((_rs), (_symbol_size), (_k), (_r), (_t))) {                                                           \
+            rs_destroy((_rs));                                                                                         \
+            return 1;                                                                                                  \
+        }                                                                                                              \
     } while (0)
 
 static int test(RS_t* rs, size_t symbol_size, uint16_t k, uint16_t r, uint16_t t) {

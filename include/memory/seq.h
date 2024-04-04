@@ -1,8 +1,7 @@
 /**
  * @file seq.h
  * @author Matvey Kolesov (kolesov645@gmail.com)
- * @brief Contains symbol_seq_t definition and functions for interaction with
- * symbol sequences.
+ * @brief Contains symbol_seq_t definition and functions for interaction with symbol sequences.
  * @date 2024-01-23
  *
  * @copyright Copyright (c) 2024

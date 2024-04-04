@@ -2,12 +2,12 @@
 
 #include <rs/gf65536.h>
 
-#define TEST_WRAPPER(_gf, _a, _b, _res)                                                            \
-    do {                                                                                           \
-        if (test((_gf), (_a), (_b), (_res))) {                                                     \
-            gf_destroy((_gf));                                                                     \
-            return 1;                                                                              \
-        }                                                                                          \
+#define TEST_WRAPPER(_gf, _a, _b, _res)                                                                                \
+    do {                                                                                                               \
+        if (test((_gf), (_a), (_b), (_res))) {                                                                         \
+            gf_destroy((_gf));                                                                                         \
+            return 1;                                                                                                  \
+        }                                                                                                              \
     } while (0)
 
 static int test(GF_t* gf, element_t a, element_t b, element_t res) {

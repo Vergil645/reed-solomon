@@ -86,8 +86,7 @@ bool full_symbol_adjust_min_coef(equation_t* eq) {
             }
         }
         if (result != true) {
-            for (int64_t j = i * sizeof(uint64_t);
-                 j < (i + 1) * sizeof(uint64_t) && j < eq->n_protected_symbols; j++) {
+            for (int64_t j = i * sizeof(uint64_t); j < (i + 1) * sizeof(uint64_t) && j < eq->n_protected_symbols; j++) {
                 if (coefs[j] != 0) {
                     eq->pivot = j;
                     result = true;
@@ -155,8 +154,7 @@ static void add_coefs(equation_t* eq1, equation_t* eq2, uint16_t from, uint16_t 
     uint8_t* eq1_coefs_buffer = &eq1->coefs[from];
     uint8_t* eq2_coefs_buffer = &eq2->coefs[from];
 
-    gf256_symbol_add((void*)eq1_coefs_buffer, (void*)eq2_coefs_buffer,
-                     MIN(to + 1 - from, eq1->n_protected_symbols));
+    gf256_symbol_add((void*)eq1_coefs_buffer, (void*)eq2_coefs_buffer, MIN(to + 1 - from, eq1->n_protected_symbols));
 }
 
 static void full_symbol_add_base(equation_t* eq1, equation_t* eq2) {
@@ -186,8 +184,7 @@ static void full_symbol_add_base(equation_t* eq1, equation_t* eq2) {
     }
 
     equation_adjust_non_zero_bounds(eq1);
-    gf256_symbol_add((void*)eq1->constant_term->data, (void*)eq2->constant_term->data,
-                     eq2->symbol_size);
+    gf256_symbol_add((void*)eq1->constant_term->data, (void*)eq2->constant_term->data, eq2->symbol_size);
 }
 
 int equation_add(equation_t* eq1, equation_t* eq2) {

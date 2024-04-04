@@ -4,13 +4,12 @@
 
 #include <rs/cyclotomic_coset.h>
 
-#define TEST_WRAPPER(_cc, _k, _r, _inf_cosets, _inf_cosets_cnt, _rep_cosets, _rep_cosets_cnt)      \
-    do {                                                                                           \
-        if (test((_cc), (_k), (_r), (_inf_cosets), (_inf_cosets_cnt), (_rep_cosets),               \
-                 (_rep_cosets_cnt))) {                                                             \
-            cc_destroy((_cc));                                                                     \
-            return 1;                                                                              \
-        }                                                                                          \
+#define TEST_WRAPPER(_cc, _k, _r, _inf_cosets, _inf_cosets_cnt, _rep_cosets, _rep_cosets_cnt)                          \
+    do {                                                                                                               \
+        if (test((_cc), (_k), (_r), (_inf_cosets), (_inf_cosets_cnt), (_rep_cosets), (_rep_cosets_cnt))) {             \
+            cc_destroy((_cc));                                                                                         \
+            return 1;                                                                                                  \
+        }                                                                                                              \
     } while (0)
 
 static bool cosets_eq(const coset_t* a, uint16_t a_len, const coset_t* b, uint16_t b_len) {
@@ -40,8 +39,8 @@ static void cosets_printf(const coset_t* cosets, uint16_t cosets_cnt) {
     }
 }
 
-static int test(CC_t* cc, uint16_t k, uint16_t r, const coset_t* inf_cosets,
-                uint16_t inf_cosets_cnt, const coset_t* rep_cosets, uint16_t rep_cosets_cnt) {
+static int test(CC_t* cc, uint16_t k, uint16_t r, const coset_t* inf_cosets, uint16_t inf_cosets_cnt,
+                const coset_t* rep_cosets, uint16_t rep_cosets_cnt) {
     coset_t* _inf_cosets;
     coset_t* _rep_cosets;
     uint16_t _inf_cosets_cnt;
@@ -61,8 +60,8 @@ static int test(CC_t* cc, uint16_t k, uint16_t r, const coset_t* inf_cosets,
         return 1;
     }
 
-    cc_select_cosets(cc, k, r, _inf_cosets, inf_cosets_cnt, &_inf_cosets_cnt, _rep_cosets,
-                     rep_cosets_cnt, &_rep_cosets_cnt);
+    cc_select_cosets(cc, k, r, _inf_cosets, inf_cosets_cnt, &_inf_cosets_cnt, _rep_cosets, rep_cosets_cnt,
+                     &_rep_cosets_cnt);
 
     if (!cosets_eq(_inf_cosets, _inf_cosets_cnt, inf_cosets, inf_cosets_cnt)) {
         printf("ERROR: cc_select_cosets(*, %u, %u, ...): incorrect inf_cosets:\n", k, r);

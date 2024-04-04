@@ -47,8 +47,7 @@ uint8_t gf256_mul(uint8_t a, uint8_t b, uint8_t** mul) { return mul[a][b]; }
  * @param[in]     coef  Coefficient by which the second packet is multiplied
  * @param[in]     p2     Second symbol
  */
-void gf256_symbol_add_scaled(void* symbol1, uint8_t coef, const void* symbol2, uint32_t symbol_size,
-                             uint8_t** mul) {
+void gf256_symbol_add_scaled(void* symbol1, uint8_t coef, const void* symbol2, uint32_t symbol_size, uint8_t** mul) {
     if (coef == 0)
         return;
 
@@ -104,15 +103,13 @@ void gf256_symbol_add(void* symbol1, const void* symbol2, uint32_t symbol_size) 
     uint64_t* data64_2 = (uint64_t*)symbol2;
     size_t max_64_idx = symbol_size / sizeof(uint64_t);
 
-    for (const uint64_t* end64_1 = data64_1 + max_64_idx; data64_1 != end64_1;
-         ++data64_1, ++data64_2)
+    for (const uint64_t* end64_1 = data64_1 + max_64_idx; data64_1 != end64_1; ++data64_1, ++data64_2)
         *data64_1 ^= *data64_2;
 
     uint8_t* data_1 = (uint8_t*)data64_1;
     uint8_t* data_2 = (uint8_t*)data64_2;
 
-    for (const uint8_t* end_1 = (uint8_t*)symbol1 + symbol_size; data_1 != end_1;
-         ++data_1, ++data_2)
+    for (const uint8_t* end_1 = (uint8_t*)symbol1 + symbol_size; data_1 != end_1; ++data_1, ++data_2)
         *data_1 ^= *data_2;
 }
 

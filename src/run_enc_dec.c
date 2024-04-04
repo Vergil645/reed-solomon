@@ -31,8 +31,7 @@ static void init_rcv_symbols(const symbol_seq_t* src_symbols, symbol_seq_t* rcv_
     size_t length = src_symbols->length;
 
     for (size_t i = 0; i < length; ++i) {
-        memcpy((void*)rcv_symbols->symbols[i]->data, (void*)src_symbols->symbols[i]->data,
-               symbol_size);
+        memcpy((void*)rcv_symbols->symbols[i]->data, (void*)src_symbols->symbols[i]->data, symbol_size);
     }
 }
 
@@ -67,9 +66,9 @@ static void erase_symbols(symbol_seq_t* rcv_symbols, uint16_t t, const bool* is_
     }
 }
 
-static int init_data(size_t symbol_size, uint16_t k, uint16_t r, uint16_t t,
-                     symbol_seq_t** src_symbols, symbol_seq_t** rcv_symbols, uint32_t** seeds,
-                     bool** is_erased, symbol_seq_t* inf_symbols, symbol_seq_t* rep_symbols) {
+static int init_data(size_t symbol_size, uint16_t k, uint16_t r, uint16_t t, symbol_seq_t** src_symbols,
+                     symbol_seq_t** rcv_symbols, uint32_t** seeds, bool** is_erased, symbol_seq_t* inf_symbols,
+                     symbol_seq_t* rep_symbols) {
     assert(src_symbols != NULL);
     assert(rcv_symbols != NULL);
     assert(seeds != NULL);
@@ -134,8 +133,7 @@ static int run_rs_enc(RS_t* rs, const symbol_seq_t* inf_symbols, symbol_seq_t* r
     return 0;
 }
 
-static int run_rs_dec(RS_t* rs, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbols,
-                      const bool is_erased[], uint16_t t) {
+static int run_rs_dec(RS_t* rs, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbols, const bool is_erased[], uint16_t t) {
     int err;
 
     err = rs_restore_symbols(rs, k, r, rcv_symbols, is_erased, t);
@@ -147,8 +145,7 @@ static int run_rs_dec(RS_t* rs, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbol
     return 0;
 }
 
-static int run_rlc_enc(RLC_t* rlc, const symbol_seq_t* inf_symbols, symbol_seq_t* rep_symbols,
-                       uint32_t seeds[]) {
+static int run_rlc_enc(RLC_t* rlc, const symbol_seq_t* inf_symbols, symbol_seq_t* rep_symbols, uint32_t seeds[]) {
     int err;
 
     err = rlc_generate_repair_symbols(rlc, inf_symbols, rep_symbols, seeds);
@@ -160,8 +157,8 @@ static int run_rlc_enc(RLC_t* rlc, const symbol_seq_t* inf_symbols, symbol_seq_t
     return 0;
 }
 
-static int run_rlc_dec(RLC_t* rlc, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbols,
-                       const uint32_t seeds[], const bool is_erased[], uint16_t t) {
+static int run_rlc_dec(RLC_t* rlc, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbols, const uint32_t seeds[],
+                       const bool is_erased[], uint16_t t) {
     int err;
 
     err = rlc_restore_symbols(rlc, k, r, rcv_symbols, seeds, is_erased, t);
@@ -179,8 +176,7 @@ typedef enum algo_type {
     NO,
 } algo_type_t;
 
-static int parse_args(int argc, char* argv[], algo_type_t* algo_type, uint16_t* k, uint16_t* r,
-                      uint16_t* t) {
+static int parse_args(int argc, char* argv[], algo_type_t* algo_type, uint16_t* k, uint16_t* r, uint16_t* t) {
     if (argc < 4) {
         printf("Expected at least 3 arguments: <RS/RLC/NO> <k> <r> [t]\n");
         return 2;
@@ -245,8 +241,7 @@ int main(int argc, char* argv[]) {
     uint32_t* seeds = NULL;
     bool* is_erased = NULL;
 
-    err = init_data(symbol_size, k, r, t, &src_symbols, &rcv_symbols, &seeds, &is_erased,
-                    &inf_symbols, &rep_symbols);
+    err = init_data(symbol_size, k, r, t, &src_symbols, &rcv_symbols, &seeds, &is_erased, &inf_symbols, &rep_symbols);
     if (err) {
         rlc_destroy(rlc);
         rs_destroy(rs);

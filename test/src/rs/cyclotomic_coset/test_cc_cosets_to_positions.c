@@ -4,15 +4,14 @@
 #include <rs/cyclotomic_coset.h>
 #include <test/util/util.h>
 
-#define TEST_WRAPPER(_cosets, _cosets_cnt, _positions, _positions_cnt)                             \
-    do {                                                                                           \
-        if (test((_cosets), (_cosets_cnt), (_positions), (_positions_cnt))) {                      \
-            return 1;                                                                              \
-        }                                                                                          \
+#define TEST_WRAPPER(_cosets, _cosets_cnt, _positions, _positions_cnt)                                                 \
+    do {                                                                                                               \
+        if (test((_cosets), (_cosets_cnt), (_positions), (_positions_cnt))) {                                          \
+            return 1;                                                                                                  \
+        }                                                                                                              \
     } while (0)
 
-static int test(const coset_t* cosets, uint16_t cosets_cnt, const uint16_t* positions,
-                uint16_t positions_cnt) {
+static int test(const coset_t* cosets, uint16_t cosets_cnt, const uint16_t* positions, uint16_t positions_cnt) {
     uint16_t* _positions;
     int err = 0;
 
@@ -67,8 +66,7 @@ int main(void) {
             {.leader = 21845, .size = 2},
             {.leader = 0, .size = 1},
         };
-        uint16_t positions[] = {4369,  8738,  17476, 34952, 13107, 26214,
-                                52428, 39321, 21845, 43690, 0};
+        uint16_t positions[] = {4369, 8738, 17476, 34952, 13107, 26214, 52428, 39321, 21845, 43690, 0};
 
         TEST_WRAPPER(cosets, cosets_cnt, positions, positions_cnt);
     }
@@ -81,8 +79,7 @@ int main(void) {
             {.leader = 257, .size = 8},
             {.leader = 30583, .size = 4},
         };
-        uint16_t positions[] = {257,   514,   1028,  2056,  4112, 8224,
-                                16448, 32896, 30583, 61166, 56797};
+        uint16_t positions[] = {257, 514, 1028, 2056, 4112, 8224, 16448, 32896, 30583, 61166, 56797};
 
         TEST_WRAPPER(cosets, cosets_cnt, positions, positions_cnt);
     }

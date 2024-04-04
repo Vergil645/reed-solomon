@@ -23,20 +23,19 @@
  * @param _leader cyclotomic coset leader.
  * @param _size cyclotomic coset size.
  *
- * @warning Macro defines local variable with name "__coset_tmp__" in the inner
- * scope.
+ * @warning Macro defines local variable with name "__coset_tmp__" in the inner scope.
  */
-#define INIT_COSET(_coset, _leader, _size)                                                         \
-    do {                                                                                           \
-        coset_t __coset_tmp__ = {                                                                  \
-            .leader = (_leader),                                                                   \
-            .size = (_size),                                                                       \
-        };                                                                                         \
-        (_coset) = __coset_tmp__;                                                                  \
+#define INIT_COSET(_coset, _leader, _size)                                                                             \
+    do {                                                                                                               \
+        coset_t __coset_tmp__ = {                                                                                      \
+            .leader = (_leader),                                                                                       \
+            .size = (_size),                                                                                           \
+        };                                                                                                             \
+        (_coset) = __coset_tmp__;                                                                                      \
     } while (0)
 
 /**
- * @brief  Number of leaders of cyclotomic cosets of a certain size.
+ * @brief Number of leaders of cyclotomic cosets of a certain size.
  */
 static const uint16_t g_leaders_cnt[CC_COSET_SIZES_CNT] = {[0] = CC_LEADERS_1_CNT,
                                                            [1] = CC_LEADERS_2_CNT,
@@ -47,11 +46,8 @@ static const uint16_t g_leaders_cnt[CC_COSET_SIZES_CNT] = {[0] = CC_LEADERS_1_CN
 /**
  * @brief Thresholds for using cyclotomic cosets of a certain size.
  */
-static const uint16_t g_thresholds[CC_COSET_SIZES_CNT] = {[0] = CC_THRESHOLD_1,
-                                                          [1] = CC_THRESHOLD_2,
-                                                          [2] = CC_THRESHOLD_4,
-                                                          [3] = CC_THRESHOLD_8,
-                                                          [4] = CC_THRESHOLD_16};
+static const uint16_t g_thresholds[CC_COSET_SIZES_CNT] = {
+    [0] = CC_THRESHOLD_1, [1] = CC_THRESHOLD_2, [2] = CC_THRESHOLD_4, [3] = CC_THRESHOLD_8, [4] = CC_THRESHOLD_16};
 
 CC_t* cc_create() {
     CC_t* cc;
@@ -156,8 +152,7 @@ void cc_estimate_cosets_cnt(uint16_t k, uint16_t r, uint16_t* inf_max_cnt, uint1
 }
 
 void cc_select_cosets(CC_t* cc, uint16_t k, uint16_t r, coset_t* inf_cosets, uint16_t inf_max_cnt,
-                      uint16_t* inf_cosets_cnt, coset_t* rep_cosets, uint16_t rep_max_cnt,
-                      uint16_t* rep_cosets_cnt) {
+                      uint16_t* inf_cosets_cnt, coset_t* rep_cosets, uint16_t rep_max_cnt, uint16_t* rep_cosets_cnt) {
     assert(cc != NULL);
     assert(k + r <= N);
     assert(inf_cosets != NULL);
@@ -211,8 +206,7 @@ void cc_select_cosets(CC_t* cc, uint16_t k, uint16_t r, coset_t* inf_cosets, uin
     *inf_cosets_cnt = inf_idx;
 }
 
-void cc_cosets_to_positions(const coset_t* cosets, uint16_t cosets_cnt, uint16_t* positions,
-                            uint16_t positions_cnt) {
+void cc_cosets_to_positions(const coset_t* cosets, uint16_t cosets_cnt, uint16_t* positions, uint16_t positions_cnt) {
     assert(cosets != NULL);
     assert(positions != NULL);
 

@@ -63,8 +63,8 @@ typedef struct {
 
     /**
      * @brief Coefficients in normal basis of subfields GF(2^m).
-     * @details j-th bit of normal_repr_by_subfield[m][d] - j-th coefficient in
-     * normal basis of \f$GF(2^m)\f$ subfield of element \f$\alpha^d\f$.
+     * @details j-th bit of normal_repr_by_subfield[m][d] - j-th coefficient in normal basis of \f$GF(2^m)\f$ subfield
+     * of element \f$\alpha^d\f$.
      */
     uint16_t* normal_repr_by_subfield[CC_MAX_COSET_SIZE + 1];
 
@@ -77,8 +77,7 @@ typedef struct {
 /**
  * @brief Create Galois field data structure.
  *
- * @return pointer to created Galois field data structure on success and NULL
- * otherwise.
+ * @return pointer to created Galois field data structure on success and NULL otherwise.
  */
 GF_t* gf_create();
 

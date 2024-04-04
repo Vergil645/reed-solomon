@@ -28,8 +28,7 @@ static void init_rcv_symbols(const symbol_seq_t* src_symbols, symbol_seq_t* rcv_
     size_t length = src_symbols->length;
 
     for (size_t i = 0; i < length; ++i) {
-        memcpy((void*)rcv_symbols->symbols[i]->data, (void*)src_symbols->symbols[i]->data,
-               symbol_size);
+        memcpy((void*)rcv_symbols->symbols[i]->data, (void*)src_symbols->symbols[i]->data, symbol_size);
     }
 }
 

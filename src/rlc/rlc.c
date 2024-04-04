@@ -20,9 +20,7 @@
 #include "prng/tinymt32.c"
 
 #define ALIGNMENT 32
-static __always_inline size_t align(size_t val) {
-    return (val + ALIGNMENT - 1) / ALIGNMENT * ALIGNMENT;
-}
+static __always_inline size_t align(size_t val) { return (val + ALIGNMENT - 1) / ALIGNMENT * ALIGNMENT; }
 
 RLC_t* rlc_create() {
     gf256_init();
@@ -88,8 +86,7 @@ static inline void get_coefs(tinymt32_t* prng, uint32_t seed, int n, uint8_t coe
     }
 }
 
-static int get_one_coded_symbol(RLC_t* rlc, const symbol_seq_t* inf_symbols, symbol_t* rep_symbol,
-                                uint32_t* seed) {
+static int get_one_coded_symbol(RLC_t* rlc, const symbol_seq_t* inf_symbols, symbol_t* rep_symbol, uint32_t* seed) {
     tinymt32_t prng;
     prng.mat1 = 0x8f7011ee;
     prng.mat2 = 0xfc78ff1f;
@@ -108,8 +105,8 @@ static int get_one_coded_symbol(RLC_t* rlc, const symbol_seq_t* inf_symbols, sym
     memset((void*)rep_symbol->data, 0, symbol_size);
 
     for (int j = 0; j < inf_symbols->length; j++) {
-        gf256_symbol_add_scaled((void*)rep_symbol->data, coefs[j],
-                                (void*)inf_symbols->symbols[j]->data, symbol_size, mul);
+        gf256_symbol_add_scaled((void*)rep_symbol->data, coefs[j], (void*)inf_symbols->symbols[j]->data, symbol_size,
+                                mul);
     }
 
     free(coefs);
@@ -117,8 +114,8 @@ static int get_one_coded_symbol(RLC_t* rlc, const symbol_seq_t* inf_symbols, sym
     return 0;
 }
 
-int rlc_generate_repair_symbols(RLC_t* rlc, const symbol_seq_t* inf_symbols,
-                                const symbol_seq_t* rep_symbols, uint32_t* seeds) {
+int rlc_generate_repair_symbols(RLC_t* rlc, const symbol_seq_t* inf_symbols, const symbol_seq_t* rep_symbols,
+                                uint32_t* seeds) {
     for (uint16_t i = 0; i < rep_symbols->length; ++i) {
         int err;
 
@@ -130,8 +127,8 @@ int rlc_generate_repair_symbols(RLC_t* rlc, const symbol_seq_t* inf_symbols,
     return 0;
 }
 
-static int receive_repair_symbol(RLC_t* rlc, system_t* system, const symbol_seq_t* inf_symbols,
-                                 symbol_t* rep_symbol, uint32_t seed, const bool* is_erased) {
+static int receive_repair_symbol(RLC_t* rlc, system_t* system, const symbol_seq_t* inf_symbols, symbol_t* rep_symbol,
+                                 uint32_t seed, const bool* is_erased) {
     uint16_t k = (uint16_t)inf_symbols->length;
 
     equation_t* eq = (equation_t*)malloc(sizeof(equation_t));
@@ -163,9 +160,8 @@ static int receive_repair_symbol(RLC_t* rlc, system_t* system, const symbol_seq_
     for (uint16_t i = 0; i < k; ++i) {
         if (is_erased[i])
             continue;
-        gf256_symbol_add_scaled((void*)eq->constant_term->data, eq->coefs[i],
-                                (void*)inf_symbols->symbols[i]->data, inf_symbols->symbol_size,
-                                mul_table);
+        gf256_symbol_add_scaled((void*)eq->constant_term->data, eq->coefs[i], (void*)inf_symbols->symbols[i]->data,
+                                inf_symbols->symbol_size, mul_table);
         eq->coefs[i] = 0;
     }
 
@@ -192,8 +188,7 @@ static int receive_repair_symbol(RLC_t* rlc, system_t* system, const symbol_seq_
     equation_t* removed = NULL;
     int used_in_system = 0;
 
-    system_add_with_elimination(system, eq, inv_table, mul_table, &decoded, &removed,
-                                &used_in_system);
+    system_add_with_elimination(system, eq, inv_table, mul_table, &decoded, &removed, &used_in_system);
     if (!used_in_system) {
         free(eq->coefs);
         free(eq);
@@ -202,8 +197,8 @@ static int receive_repair_symbol(RLC_t* rlc, system_t* system, const symbol_seq_
     return 0;
 }
 
-int rlc_restore_symbols(RLC_t* rlc, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbols,
-                        const uint32_t* seeds, const bool* is_erased, uint16_t t) {
+int rlc_restore_symbols(RLC_t* rlc, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbols, const uint32_t* seeds,
+                        const bool* is_erased, uint16_t t) {
     symbol_seq_t inf_symbols;
     symbol_seq_t rep_symbols;
     int err = 0;
@@ -231,8 +226,7 @@ int rlc_restore_symbols(RLC_t* rlc, uint16_t k, uint16_t r, symbol_seq_t* rcv_sy
     for (uint16_t i = 0; i < r; ++i) {
         if (is_erased[k + i])
             continue;
-        err = receive_repair_symbol(rlc, &system, &inf_symbols, rep_symbols.symbols[i], seeds[i],
-                                    is_erased);
+        err = receive_repair_symbol(rlc, &system, &inf_symbols, rep_symbols.symbols[i], seeds[i], is_erased);
         if (err) {
             for (uint16_t j = 0; j < system.n_equations; ++j) {
                 free(system.equations[j]->coefs);
@@ -253,8 +247,7 @@ int rlc_restore_symbols(RLC_t* rlc, uint16_t k, uint16_t r, symbol_seq_t* rcv_sy
         assert(equation_has_one_id(eq));
         assert(equation_get_coef(eq, i) == 1);
 
-        memcpy((void*)rcv_symbols->symbols[i]->data, (void*)eq->constant_term->data,
-               rcv_symbols->symbol_size);
+        memcpy((void*)rcv_symbols->symbols[i]->data, (void*)eq->constant_term->data, rcv_symbols->symbol_size);
     }
 
     for (uint16_t i = 0; i < system.max_equations; ++i) {

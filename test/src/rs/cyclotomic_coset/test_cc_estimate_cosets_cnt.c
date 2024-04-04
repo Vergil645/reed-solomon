@@ -2,11 +2,11 @@
 
 #include <rs/cyclotomic_coset.h>
 
-#define TEST_WRAPPER(_k, _r, _inf_max_cnt_lb, _rep_max_cnt_lb)                                     \
-    do {                                                                                           \
-        if (test((_k), (_r), (_inf_max_cnt_lb), (_rep_max_cnt_lb))) {                              \
-            return 1;                                                                              \
-        }                                                                                          \
+#define TEST_WRAPPER(_k, _r, _inf_max_cnt_lb, _rep_max_cnt_lb)                                                         \
+    do {                                                                                                               \
+        if (test((_k), (_r), (_inf_max_cnt_lb), (_rep_max_cnt_lb))) {                                                  \
+            return 1;                                                                                                  \
+        }                                                                                                              \
     } while (0)
 
 static int test(uint16_t k, uint16_t r, uint16_t inf_max_cnt_lb, uint16_t rep_max_cnt_lb) {

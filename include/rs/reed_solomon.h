@@ -24,8 +24,7 @@
 #define RS_COSET_LOCATOR_MAX_LEN (CC_MAX_COSET_SIZE + 1)
 
 /**
- * @brief Return code for cases when erases cannot be restored due to code
- * parameters.
+ * @brief Return code for cases when erases cannot be restored due to code parameters.
  */
 #define RS_ERR_CANNOT_RESTORE 100
 
@@ -57,11 +56,9 @@ void rs_destroy(RS_t* rs);
  * @param rs context object.
  * @param inf_symbols information symbols.
  * @param rep_symbols where to place the result.
- * @return 0 on success,\n
- *         1 on memory allocation error.
+ * @return 0 on success, 1 on memory allocation error.
  */
-int rs_generate_repair_symbols(RS_t* rs, const symbol_seq_t* inf_symbols,
-                               symbol_seq_t* rep_symbols);
+int rs_generate_repair_symbols(RS_t* rs, const symbol_seq_t* inf_symbols, symbol_seq_t* rep_symbols);
 
 /**
  * @brief Restore erased symbols. Assume that rcv_symbols[i] = 0 for erased i.
@@ -72,11 +69,8 @@ int rs_generate_repair_symbols(RS_t* rs, const symbol_seq_t* inf_symbols,
  * @param rcv_symbols received symbols, restored symbols will be written here.
  * @param is_erased indicates which symbols has been erased.
  * @param t number of erases.
- * @return 0 on success,\n
- *         1 on memory allocation error,\n
- *         or RS_ERR_CANNOT_RESTORE.
+ * @return 0 on success, 1 on memory allocation error, or RS_ERR_CANNOT_RESTORE.
  */
-int rs_restore_symbols(RS_t* rs, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbols,
-                       const bool* is_erased, uint16_t t);
+int rs_restore_symbols(RS_t* rs, uint16_t k, uint16_t r, symbol_seq_t* rcv_symbols, const bool* is_erased, uint16_t t);
 
 #endif

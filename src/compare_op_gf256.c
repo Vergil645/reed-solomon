@@ -47,14 +47,12 @@ static void compare_by_clock(uint8_t* a, uint8_t* b, uint8_t** mul) {
     printf("===== clock() =====\n");
     printf("< += >   (coef=1) time: %lu\n", elapsed_time_add);
     printf("< +=.* > (coef>1) time: %lu\n", elapsed_time_mul);
-    printf("time ratio \"< +=.* >/< += >\": %.3f\n",
-           (double)elapsed_time_mul / (double)elapsed_time_add);
+    printf("time ratio \"< +=.* >/< += >\": %.3f\n", (double)elapsed_time_mul / (double)elapsed_time_add);
 }
 
 #define USECS_IN_SEC 1000000
 static double get_diff_secs(struct timeval begin, struct timeval end) {
-    return (double)(end.tv_usec - begin.tv_usec) / USECS_IN_SEC +
-           (double)(end.tv_sec - begin.tv_sec);
+    return (double)(end.tv_usec - begin.tv_usec) / USECS_IN_SEC + (double)(end.tv_sec - begin.tv_sec);
 }
 
 static void compare_by_gettimeofday(uint8_t* a, uint8_t* b, uint8_t** mul) {

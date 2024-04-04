@@ -31,14 +31,12 @@ void fft_transform(GF_t* gf, const symbol_seq_t* f, const uint16_t* positions, s
 
         for (uint16_t i = 0; i < f->length; ++i) {
             coef = pow_table[(positions[i] * j) % N];
-            gf_madd(gf, (void*)res->symbols[j]->data, coef, (void*)f->symbols[i]->data,
-                    symbol_size);
+            gf_madd(gf, (void*)res->symbols[j]->data, coef, (void*)f->symbols[i]->data, symbol_size);
         }
     }
 }
 
-int fft_transform_cycl(GF_t* gf, const symbol_seq_t* f, const uint16_t* positions,
-                       symbol_seq_t* res) {
+int fft_transform_cycl(GF_t* gf, const symbol_seq_t* f, const uint16_t* positions, symbol_seq_t* res) {
     assert(gf != NULL);
     assert(f != NULL);
     assert(positions != NULL);
@@ -83,8 +81,7 @@ int fft_transform_cycl(GF_t* gf, const symbol_seq_t* f, const uint16_t* position
 
                 for (uint8_t t = 0; t < m; ++t) {
                     element_t coef = gf_get_normal_basis_element(gf, m, (j + t) % m);
-                    gf_madd(gf, (void*)res->symbols[idx]->data, coef, (void*)u->symbols[t]->data,
-                            symbol_size);
+                    gf_madd(gf, (void*)res->symbols[idx]->data, coef, (void*)u->symbols[t]->data, symbol_size);
                 }
 
                 calculated[idx] = true;
@@ -103,8 +100,7 @@ int fft_transform_cycl(GF_t* gf, const symbol_seq_t* f, const uint16_t* position
 }
 
 // cppcheck-suppress unusedFunction
-void fft_partial_transform(GF_t* gf, const symbol_seq_t* f, const uint16_t* components,
-                           symbol_seq_t* res) {
+void fft_partial_transform(GF_t* gf, const symbol_seq_t* f, const uint16_t* components, symbol_seq_t* res) {
     assert(gf != NULL);
     assert(f != NULL);
     assert(components != NULL);
@@ -122,14 +118,13 @@ void fft_partial_transform(GF_t* gf, const symbol_seq_t* f, const uint16_t* comp
 
         for (uint16_t i = 0; i < f->length; ++i) {
             coef = pow_table[(i * j) % N];
-            gf_madd(gf, (void*)res->symbols[res_idx]->data, coef, (void*)f->symbols[i]->data,
-                    symbol_size);
+            gf_madd(gf, (void*)res->symbols[res_idx]->data, coef, (void*)f->symbols[i]->data, symbol_size);
         }
     }
 }
 
-int fft_partial_transform_cycl(GF_t* gf, const symbol_seq_t* f, const coset_t* cosets,
-                               uint16_t cosets_cnt, symbol_seq_t* res) {
+int fft_partial_transform_cycl(GF_t* gf, const symbol_seq_t* f, const coset_t* cosets, uint16_t cosets_cnt,
+                               symbol_seq_t* res) {
     assert(gf != NULL);
     assert(f != NULL);
     assert(cosets != NULL);
@@ -169,8 +164,7 @@ int fft_partial_transform_cycl(GF_t* gf, const symbol_seq_t* f, const coset_t* c
 
             for (uint8_t t = 0; t < m; ++t) {
                 element_t coef = gf_get_normal_basis_element(gf, m, (j + t) % m);
-                gf_madd(gf, (void*)res->symbols[idx]->data, coef, (void*)u->symbols[t]->data,
-                        symbol_size);
+                gf_madd(gf, (void*)res->symbols[idx]->data, coef, (void*)u->symbols[t]->data, symbol_size);
             }
         }
     }

@@ -26,8 +26,7 @@ equation_t* system_get_pivot_for_id(system_t* system, uint16_t id) {
     return NULL;
 }
 
-static int reduce_equation(system_t* system, equation_t* eq, uint8_t** mul_table,
-                           uint8_t* inv_table) {
+static int reduce_equation(system_t* system, equation_t* eq, uint8_t** mul_table, uint8_t* inv_table) {
 
     equation_adjust_non_zero_bounds(eq);
     if (eq->pivot == ID_NONE)
@@ -43,8 +42,7 @@ static int reduce_equation(system_t* system, equation_t* eq, uint8_t** mul_table
                 /* we cancel the coef */
 
                 equation_multiply(eq,
-                                  mul_table[equation_get_coef(
-                                      pivot_equation, pivot_equation->pivot)][inv_table[coef]],
+                                  mul_table[equation_get_coef(pivot_equation, pivot_equation->pivot)][inv_table[coef]],
                                   mul_table);
 
                 // we reduce the equation and remove its pivot coefficient by
@@ -104,8 +102,8 @@ static uint32_t system_add(system_t* system, equation_t* eq, equation_t** remove
     return ENTRY_INDEX_NONE;
 }
 
-static uint32_t system_add_as_pivot(system_t* system, equation_t* eq, uint8_t* inv_table,
-                                    uint8_t** mul_table, int* decoded, equation_t** removed) {
+static uint32_t system_add_as_pivot(system_t* system, equation_t* eq, uint8_t* inv_table, uint8_t** mul_table,
+                                    int* decoded, equation_t** removed) {
     *decoded = 0;
     equation_adjust_non_zero_bounds(eq);
     if (eq->pivot == ID_NONE) {
@@ -114,8 +112,7 @@ static uint32_t system_add_as_pivot(system_t* system, equation_t* eq, uint8_t* i
     uint16_t first_id = eq->pivot;
 
     int n_non_null_equations = 0;
-    for (uint32_t i = 0; i < system->max_equations && n_non_null_equations < system->n_equations;
-         i++) {
+    for (uint32_t i = 0; i < system->max_equations && n_non_null_equations < system->n_equations; i++) {
         if (system->equations[i]) {
             n_non_null_equations++;
         }
@@ -125,8 +122,7 @@ static uint32_t system_add_as_pivot(system_t* system, equation_t* eq, uint8_t* i
         // multiplying  by coef*inv[pivot] instead of just coef and remove the
         // multiplication by inv !
         if (system->equations[i] && equation_get_coef(system->equations[i], first_id) != 0) {
-            uint8_t coef = equation_get_coef(system->equations[i],
-                                             first_id); /* XXX: if coef == 0, nothing to do */
+            uint8_t coef = equation_get_coef(system->equations[i], first_id); /* XXX: if coef == 0, nothing to do */
             if (coef != 0) {
 
                 //            equation_multiply(eq,
@@ -139,13 +135,11 @@ static uint32_t system_add_as_pivot(system_t* system, equation_t* eq, uint8_t* i
                 bool has_one_id_before_add = equation_has_one_id(system->equations[i]);
                 // int err = equation_add(system->equations[i], eq);
                 equation_add(system->equations[i], eq);
-                bool is_decoded =
-                    !has_one_id_before_add && equation_has_one_id(system->equations[i]);
+                bool is_decoded = !has_one_id_before_add && equation_has_one_id(system->equations[i]);
                 if (is_decoded) {
                     uint16_t si = equation_get_min_symbol_id(system->equations[i]);
                     if (equation_get_coef(system->equations[i], si) != 1) {
-                        equation_multiply(system->equations[i],
-                                          inv_table[equation_get_coef(system->equations[i], si)],
+                        equation_multiply(system->equations[i], inv_table[equation_get_coef(system->equations[i], si)],
                                           mul_table);
                     }
                     assert(equation_get_coef(system->equations[i], si) == 1);
@@ -160,9 +154,8 @@ static uint32_t system_add_as_pivot(system_t* system, equation_t* eq, uint8_t* i
     return system_add(system, eq, removed);
 }
 
-int system_add_with_elimination(system_t* system, equation_t* eq, uint8_t* inv_table,
-                                uint8_t** mul_table, int* decoded, equation_t** removed,
-                                int* used_in_system) {
+int system_add_with_elimination(system_t* system, equation_t* eq, uint8_t* inv_table, uint8_t** mul_table, int* decoded,
+                                equation_t** removed, int* used_in_system) {
     *removed = NULL;
     *decoded = 0;
     *used_in_system = 0;
@@ -184,8 +177,7 @@ int system_add_with_elimination(system_t* system, equation_t* eq, uint8_t* inv_t
             *decoded = 1;
             uint16_t si = equation_get_min_symbol_id(stored_symbol);
             if (equation_get_coef(stored_symbol, si) != 1) {
-                equation_multiply(stored_symbol, inv_table[equation_get_coef(stored_symbol, si)],
-                                  mul_table);
+                equation_multiply(stored_symbol, inv_table[equation_get_coef(stored_symbol, si)], mul_table);
             }
             assert(equation_get_coef(stored_symbol, si) == 1);
         }
