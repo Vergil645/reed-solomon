@@ -39,6 +39,8 @@ static void init_rcv_symbols(const symbol_seq_t* src_symbols, symbol_seq_t* rcv_
 static void choose_erased(uint16_t n, uint16_t t, bool* is_erased) {
     assert(is_erased != NULL);
 
+    memset((void*)is_erased, 0, n * sizeof(bool));
+
     while (t > 0) {
         for (uint16_t i = 0; i < n && t > 0; ++i) {
             if (is_erased[i])

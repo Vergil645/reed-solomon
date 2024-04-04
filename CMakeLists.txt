@@ -16,18 +16,13 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fanalyzer")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${ADDITIONAL_C_FLAGS_RELEASE} -Wall -DNDEBUG")
 
-include_directories(
-    "include"
-    "external/flec-moepgf/include")
+include_directories("include")
 
 set(EXTERNAL "external")
 set(SOURCES "src")
 set(LIBMEMORY_SOURCES "src/memory")
 set(LIBRLC_SOURCES "src/rlc")
 set(LIBRS_SOURCES "src/rs")
-
-add_library(moepgf STATIC IMPORTED)
-set_target_properties(moepgf PROPERTIES IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/${EXTERNAL}/libmoepgf.a")
 
 add_library(memory STATIC
     "${LIBMEMORY_SOURCES}/seq.c"
@@ -38,7 +33,7 @@ add_library(rlc STATIC
     "${LIBRLC_SOURCES}/gf256.c"
     "${LIBRLC_SOURCES}/rlc.c"
     "${LIBRLC_SOURCES}/system.c")
-target_link_libraries(rlc memory moepgf)
+target_link_libraries(rlc memory)
 
 add_library(rs STATIC
     "${LIBRS_SOURCES}/cyclotomic_coset.c"

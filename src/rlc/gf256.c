@@ -13,24 +13,11 @@
 
 #include <rlc/gf256.h>
 
-#define SYMBOL_USE_NATIVE_LIBRARY false
-
 static bool initialized = false;
-#if SYMBOL_USE_NATIVE_LIBRARY == true
-#include <moepgf/moepgf.h>
-struct moepgf gflib;
-#endif
 
 void gf256_init() {
     if (initialized)
         return;
-
-#if SYMBOL_USE_NATIVE_LIBRARY == true
-    moepgf_init(&gflib, MOEPGF256, MOEPGF_ALGORITHM_BEST);
-#ifndef NDEBUG
-    printf("moepgf hwcaps: %d\n", gflib.hwcaps);
-#endif
-#endif
 
     initialized = true;
 }
@@ -62,9 +49,6 @@ uint8_t gf256_mul(uint8_t a, uint8_t b, uint8_t** mul) { return mul[a][b]; }
  */
 void gf256_symbol_add_scaled(void* symbol1, uint8_t coef, const void* symbol2, uint32_t symbol_size,
                              uint8_t** mul) {
-#if SYMBOL_USE_NATIVE_LIBRARY == true
-    gflib.maddrc(symbol1, symbol2, coef, symbol_size);
-#else
     if (coef == 0)
         return;
 
@@ -82,15 +66,11 @@ void gf256_symbol_add_scaled(void* symbol1, uint8_t coef, const void* symbol2, u
     uint8_t* data_1 = (uint8_t*)symbol1;
     uint8_t* data_2 = (uint8_t*)symbol2;
     uint8_t* mul_row = mul[coef];
-    for (uint8_t* end_1 = data_1 + symbol_size; data_1 != end_1; ++data_1, ++data_2)
+    for (const uint8_t* end_1 = data_1 + symbol_size; data_1 != end_1; ++data_1, ++data_2)
         *data_1 ^= mul_row[*data_2];
-#endif
 }
 
 void gf256_symbol_mul(void* symbol1, uint8_t coef, uint32_t symbol_size, uint8_t** mul) {
-#if SYMBOL_USE_NATIVE_LIBRARY == true
-    gflib.mulrc(symbol1, coef, symbol_size);
-#else
     // for (uint32_t i = 0; i < symbol_size; i++) {
     //     symbol1[i] = gf256_mul(coef, symbol1[i], mul);
     // }
@@ -99,12 +79,12 @@ void gf256_symbol_mul(void* symbol1, uint8_t coef, uint32_t symbol_size, uint8_t
         uint64_t* data64 = (uint64_t*)symbol1;
         size_t max_64_idx = symbol_size / sizeof(uint64_t);
 
-        for (uint64_t* end64_1 = data64 + max_64_idx; data64 != end64_1; ++data64)
+        for (const uint64_t* end64_1 = data64 + max_64_idx; data64 != end64_1; ++data64)
             *data64 = 0;
 
         uint8_t* data = (uint8_t*)data64;
 
-        for (uint8_t* end_1 = (uint8_t*)symbol1 + symbol_size; data != end_1; ++data)
+        for (const uint8_t* end_1 = (uint8_t*)symbol1 + symbol_size; data != end_1; ++data)
             *data = 0;
 
         return;
@@ -115,29 +95,25 @@ void gf256_symbol_mul(void* symbol1, uint8_t coef, uint32_t symbol_size, uint8_t
 
     uint8_t* data = (uint8_t*)symbol1;
     uint8_t* mul_row = mul[coef];
-    for (uint8_t* end = data + symbol_size; data != end; ++data)
+    for (const uint8_t* end = data + symbol_size; data != end; ++data)
         *data = mul_row[*data];
-#endif
 }
 
 void gf256_symbol_add(void* symbol1, const void* symbol2, uint32_t symbol_size) {
-#if SYMBOL_USE_NATIVE_LIBRARY == true
-    gflib.maddrc(symbol1, symbol2, 1, symbol_size);
-    // FIXME: remaining
-#else
     uint64_t* data64_1 = (uint64_t*)symbol1;
     uint64_t* data64_2 = (uint64_t*)symbol2;
     size_t max_64_idx = symbol_size / sizeof(uint64_t);
 
-    for (uint64_t* end64_1 = data64_1 + max_64_idx; data64_1 != end64_1; ++data64_1, ++data64_2)
+    for (const uint64_t* end64_1 = data64_1 + max_64_idx; data64_1 != end64_1;
+         ++data64_1, ++data64_2)
         *data64_1 ^= *data64_2;
 
     uint8_t* data_1 = (uint8_t*)data64_1;
     uint8_t* data_2 = (uint8_t*)data64_2;
 
-    for (uint8_t* end_1 = (uint8_t*)symbol1 + symbol_size; data_1 != end_1; ++data_1, ++data_2)
+    for (const uint8_t* end_1 = (uint8_t*)symbol1 + symbol_size; data_1 != end_1;
+         ++data_1, ++data_2)
         *data_1 ^= *data_2;
-#endif
 }
 
 void assign_mul(uint8_t** array) {

@@ -38,22 +38,6 @@ target_link_libraries(test_rs_cc_select_cosets rs)
 add_executable(test_rs_cc_cosets_to_positions "${RS_TEST_SOURCES}/cyclotomic_coset/test_cc_cosets_to_positions.c")
 target_link_libraries(test_rs_cc_cosets_to_positions rs testutil)
 
-# --- rs/fft
-
-# add_executable(test_rs_fft_transform "${RS_TEST_SOURCES}/fft/test_fft_transform.c")
-# target_link_libraries(test_rs_fft_transform rs testutil)
-
-# add_executable(test_rs_fft_partial_transform "${RS_TEST_SOURCES}/fft/test_fft_partial_transform.c")
-# target_link_libraries(test_rs_fft_partial_transform rs testutil)
-
-# --- rs/reed_solomon
-
-# add_executable(test_rs_generate_repair_symbols "${RS_TEST_SOURCES}/reed_solomon/test_rs_generate_repair_symbols.c")
-# target_link_libraries(test_rs_generate_repair_symbols rs testutil)
-
-# add_executable(test_rs_restore_symbols "${RS_TEST_SOURCES}/reed_solomon/test_rs_restore_symbols.c")
-# target_link_libraries(test_rs_restore_symbols rs testutil)
-
 # --- rs
 
 add_executable(test_rs_random_data "${RS_TEST_SOURCES}/test_random_data.c")
@@ -78,16 +62,6 @@ add_test(NAME test_rs_gf_div_ee COMMAND test_rs_gf_div_ee)
 add_test(NAME test_rs_cc_estimate_cosets_cnt COMMAND test_rs_cc_estimate_cosets_cnt)
 add_test(NAME test_rs_cc_select_cosets COMMAND test_rs_cc_select_cosets)
 add_test(NAME test_rs_cc_cosets_to_positions COMMAND test_rs_cc_cosets_to_positions)
-
-# --- rs/fft
-
-# add_test(NAME test_rs_fft_transform COMMAND test_rs_fft_transform)
-# add_test(NAME test_rs_fft_partial_transform COMMAND test_rs_fft_partial_transform)
-
-# --- rs/reed_solomon
-
-# add_test(NAME test_rs_generate_repair_symbols COMMAND test_rs_generate_repair_symbols)
-# add_test(NAME test_rs_restore_symbols COMMAND test_rs_restore_symbols)
 
 # --- rs
 
