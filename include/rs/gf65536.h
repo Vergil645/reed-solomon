@@ -26,7 +26,10 @@
  */
 #define GF_PRIMITIVE_POLY 65581
 
-#define GF_NORMAL_BASES_FIRST_IDX_BY_M(_m) ((_m)-1)
+/**
+ * @brief Number of elements in normal bases of all GF(65536) subfields.
+ */
+#define GF_NORMAL_BASES_ELEMENTS 31
 
 /**
  * @brief Galois field element type.
@@ -59,7 +62,7 @@ typedef struct {
     /**
      * @brief Normal bases of all GF(65536) subfields.
      */
-    element_t normal_bases[CC_NORMAL_BASES_ELEMENTS];
+    element_t normal_bases[GF_NORMAL_BASES_ELEMENTS];
 
     /**
      * @brief Coefficients in normal basis of subfields GF(2^m).

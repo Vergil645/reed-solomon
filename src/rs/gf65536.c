@@ -13,6 +13,11 @@
 
 #include <rs/gf65536.h>
 
+/**
+ * @brief Index in normal_bases array of the first basis element for the specified subfield.
+ */
+#define GF_NORMAL_BASES_FIRST_IDX_BY_M(_m) ((_m)-1)
+
 static inline void _gf_fill_normal_bases(element_t* normal_bases) {
     normal_bases[GF_NORMAL_BASES_FIRST_IDX_BY_M(1) + 0] = 1;
 

@@ -28,11 +28,6 @@
 #define CC_MAX_COSET_SIZE 16
 
 /**
- * @brief Number of elements in normal bases of all GF(65536) subfields.
- */
-#define CC_NORMAL_BASES_ELEMENTS 31
-
-/**
  * @brief Number of leaders of cyclotomic cosets of size 1.
  */
 #define CC_LEADERS_1_CNT 1
