@@ -51,6 +51,9 @@ target_link_libraries(compare_codes rs rlc)
 add_executable(run_enc_dec "${SOURCES}/run_enc_dec.c")
 target_link_libraries(run_enc_dec rs rlc)
 
+add_executable(example "${SOURCES}/example.c")
+target_link_libraries(example rs)
+
 # ===================
 # ===== TESTING =====
 # ===================
