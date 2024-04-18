@@ -26,11 +26,17 @@ You can see that our implementation is **>2 times faster** than RLC.
 
 Also, our implementation consumes **60%** less energy than RLC. It was measured on 12th Gen Intel® Core™ i7-12700F CPU using `turbostat` utility.
 
-## Interface
+## Interface and documentation
 
 You can find documentation for encoder and decoder in [Reed-Solomon header](./include/rs/reed_solomon.h) file.
 
-Also, you can find documentation about symbol and sequence management in [memory include](./include/memory/) directory.
+You can find documentation about symbol and sequence management in [memory include](./include/memory/) directory.
+
+Also, you can generate HTML documentation using `Doxygen`:
+
+```sh
+doxygen
+```
 
 ## Building library
 
