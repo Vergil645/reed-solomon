@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,6 +10,7 @@
 
 #define SEED 78934
 #define TESTS_CNT 100
+#define Z 1.959963984540054 // q_{1-0.05/2} = q_{0.975} of nomral distribution
 
 static void generate_inf_symbols(const symbol_seq_t* inf_symbols) {
     size_t symbol_size = inf_symbols->symbol_size;
@@ -191,6 +193,29 @@ static int compare(RS_t* rs, RLC_t* rlc, size_t symbol_size, uint16_t k, uint16_
     return 0;
 }
 
+void calc_mean_with_delta(const double* x, size_t n, double* mean_res, double* delta_res) {
+    assert(n >= 30);
+
+    double mean = 0.0;
+    double s = 0.0;
+    double delta;
+
+    for (size_t i = 0; i < n; ++i)
+        mean += x[i];
+    mean /= (double)n;
+
+    for (size_t i = 0; i < n; ++i) {
+        double tmp = x[i] - mean;
+        s += tmp * tmp;
+    }
+    s = sqrt(s / (double)(n - 1));
+
+    delta = s * Z / sqrt((double)n);
+
+    *mean_res = mean;
+    *delta_res = delta;
+}
+
 int main(void) {
     RS_t* rs;
     RLC_t* rlc;
@@ -210,41 +235,42 @@ int main(void) {
 
     srand(SEED);
 
-    double enc_rs_rlc_ratio = 0.0;
-    double enc_rs_rlc_ratio_sum = 0.0;
-    double enc_rlc_rs_ratio_sum = 0.0;
-    double dec_rs_rlc_ratio = 0.0;
-    double dec_rs_rlc_ratio_sum = 0.0;
-    double dec_rlc_rs_ratio_sum = 0.0;
+    double enc_rs_rlc_ratio[TESTS_CNT] = {0};
+    double dec_rs_rlc_ratio[TESTS_CNT] = {0};
 
-    for (int _i = 0; _i < TESTS_CNT; ++_i) {
+    for (int i = 0; i < TESTS_CNT; ++i) {
         size_t symbol_size = SYMBOL_SIZE;
         uint16_t k = 1000 + rand() % 1001;
         uint16_t r = 10 + rand() % 71;
         uint16_t t = r;
         int err;
 
-        err = compare(rs, rlc, symbol_size, k, r, t, &enc_rs_rlc_ratio, &dec_rs_rlc_ratio);
+        err = compare(rs, rlc, symbol_size, k, r, t, &enc_rs_rlc_ratio[i], &dec_rs_rlc_ratio[i]);
         if (err) {
             printf("ERROR: compare returned %d\n", err);
             rlc_destroy(rlc);
             rs_destroy(rs);
             return err;
         }
-
-        enc_rs_rlc_ratio_sum += enc_rs_rlc_ratio;
-        enc_rlc_rs_ratio_sum += 1.0 / enc_rs_rlc_ratio;
-        dec_rs_rlc_ratio_sum += dec_rs_rlc_ratio;
-        dec_rlc_rs_ratio_sum += 1.0 / dec_rs_rlc_ratio;
     }
+
+    double enc_rs_rlc_ratio_mean = 0.0;
+    double enc_rs_rlc_ratio_delta = 0.0;
+    calc_mean_with_delta(enc_rs_rlc_ratio, TESTS_CNT, &enc_rs_rlc_ratio_mean, &enc_rs_rlc_ratio_delta);
+
+    double dec_rs_rlc_ratio_mean = 0.0;
+    double dec_rs_rlc_ratio_delta = 0.0;
+    calc_mean_with_delta(dec_rs_rlc_ratio, TESTS_CNT, &dec_rs_rlc_ratio_mean, &dec_rs_rlc_ratio_delta);
 
     printf("===== clock() =====\n");
     printf("encode:\n");
-    printf("    time ratio \"RS/RLC\": %.3f\n", enc_rs_rlc_ratio_sum / TESTS_CNT);
-    printf("    time ratio \"RLC/RS\": %.3f\n", enc_rlc_rs_ratio_sum / TESTS_CNT);
+    printf("    time ratio \"RS/RLC\": %.3f+-%.3f\n", enc_rs_rlc_ratio_mean, enc_rs_rlc_ratio_delta);
+    printf("    time decreasing, %%: %.0f+-%.1f\n", 100.0 * (1 - enc_rs_rlc_ratio_mean),
+           100.0 * enc_rs_rlc_ratio_delta);
     printf("decode:\n");
-    printf("    time ratio \"RS/RLC\": %.3f\n", dec_rs_rlc_ratio_sum / TESTS_CNT);
-    printf("    time ratio \"RLC/RS\": %.3f\n", dec_rlc_rs_ratio_sum / TESTS_CNT);
+    printf("    time ratio \"RS/RLC\": %.3f+-%.3f\n", dec_rs_rlc_ratio_mean, dec_rs_rlc_ratio_delta);
+    printf("    time decreasing, %%: %.0f+-%.1f\n", 100.0 * (1 - dec_rs_rlc_ratio_mean),
+           100.0 * dec_rs_rlc_ratio_delta);
 
     rlc_destroy(rlc);
     rs_destroy(rs);

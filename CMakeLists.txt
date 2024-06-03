@@ -46,7 +46,7 @@ add_executable(compare_op_gf256 "${SOURCES}/compare_op_gf256.c")
 target_link_libraries(compare_op_gf256 rlc)
 
 add_executable(compare_codes "${SOURCES}/compare_codes.c")
-target_link_libraries(compare_codes rs rlc)
+target_link_libraries(compare_codes m rs rlc)
 
 add_executable(run_enc_dec "${SOURCES}/run_enc_dec.c")
 target_link_libraries(run_enc_dec rs rlc)
