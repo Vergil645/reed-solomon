@@ -37,8 +37,9 @@ struct TINYMT32_T {
 
 typedef struct TINYMT32_T tinymt32_t;
 
-static __always_inline void tinymt32_init(tinymt32_t* random, uint32_t seed);
-static __always_inline void tinymt32_init_by_array(tinymt32_t* random, uint32_t init_key[], int key_length);
+static inline __attribute__((always_inline)) void tinymt32_init(tinymt32_t* random, uint32_t seed);
+static inline __attribute__((always_inline)) void tinymt32_init_by_array(tinymt32_t* random, uint32_t init_key[],
+                                                                         int key_length);
 
 #if defined(__GNUC__)
 // cppcheck-suppress unusedFunction
@@ -47,14 +48,16 @@ static __always_inline void tinymt32_init_by_array(tinymt32_t* random, uint32_t 
  * @param random not used
  * @return always 127
  */
-__always_inline static int tinymt32_get_mexp(tinymt32_t* random __attribute__((unused))) { return TINYMT32_MEXP; }
+inline __attribute__((always_inline)) static int tinymt32_get_mexp(tinymt32_t* random __attribute__((unused))) {
+    return TINYMT32_MEXP;
+}
 
 /**
  * This function changes internal state of tinymt32.
  * Users should not call this function directly.
  * @param random tinymt internal status
  */
-__always_inline static void tinymt32_next_state(tinymt32_t* random) {
+inline __attribute__((always_inline)) static void tinymt32_next_state(tinymt32_t* random) {
     uint32_t x;
     uint32_t y;
 
@@ -76,7 +79,7 @@ __always_inline static void tinymt32_next_state(tinymt32_t* random) {
  * @param random tinymt internal status
  * @return 32-bit unsigned pseudorandom number
  */
-__always_inline static uint32_t tinymt32_temper(tinymt32_t* random) {
+inline __attribute__((always_inline)) static uint32_t tinymt32_temper(tinymt32_t* random) {
     uint32_t t0, t1;
     t0 = random->status[3];
 #if defined(LINEARITY_CHECK)
@@ -95,7 +98,7 @@ __always_inline static uint32_t tinymt32_temper(tinymt32_t* random) {
  * @param random tinymt internal status
  * @return floating point number r (1.0 <= r < 2.0)
  */
-__always_inline static float tinymt32_temper_conv(tinymt32_t* random) {
+inline __attribute__((always_inline)) static float tinymt32_temper_conv(tinymt32_t* random) {
     uint32_t t0, t1;
     union {
         uint32_t u;
@@ -120,7 +123,7 @@ __always_inline static float tinymt32_temper_conv(tinymt32_t* random) {
  * @param random tinymt internal status
  * @return floating point number r (1.0 < r < 2.0)
  */
-__always_inline static float tinymt32_temper_conv_open(tinymt32_t* random) {
+inline __attribute__((always_inline)) static float tinymt32_temper_conv_open(tinymt32_t* random) {
     uint32_t t0, t1;
     union {
         uint32_t u;
@@ -144,7 +147,7 @@ __always_inline static float tinymt32_temper_conv_open(tinymt32_t* random) {
  * @param random tinymt internal status
  * @return 32-bit unsigned integer r (0 <= r < 2^32)
  */
-__always_inline static uint32_t tinymt32_generate_uint32(tinymt32_t* random) {
+inline __attribute__((always_inline)) static uint32_t tinymt32_generate_uint32(tinymt32_t* random) {
     tinymt32_next_state(random);
     return tinymt32_temper(random);
 }
@@ -157,7 +160,7 @@ __always_inline static uint32_t tinymt32_generate_uint32(tinymt32_t* random) {
  * @param random tinymt internal status
  * @return floating point number r (0.0 <= r < 1.0)
  */
-__always_inline static float tinymt32_generate_float(tinymt32_t* random) {
+inline __attribute__((always_inline)) static float tinymt32_generate_float(tinymt32_t* random) {
     tinymt32_next_state(random);
     return (tinymt32_temper(random) >> 8) * TINYMT32_MUL;
 }
@@ -169,7 +172,7 @@ __always_inline static float tinymt32_generate_float(tinymt32_t* random) {
  * @param random tinymt internal status
  * @return floating point number r (1.0 <= r < 2.0)
  */
-__always_inline static float tinymt32_generate_float12(tinymt32_t* random) {
+inline __attribute__((always_inline)) static float tinymt32_generate_float12(tinymt32_t* random) {
     tinymt32_next_state(random);
     return tinymt32_temper_conv(random);
 }
@@ -181,7 +184,7 @@ __always_inline static float tinymt32_generate_float12(tinymt32_t* random) {
  * @param random tinymt internal status
  * @return floating point number r (0.0 <= r < 1.0)
  */
-__always_inline static float tinymt32_generate_float01(tinymt32_t* random) {
+inline __attribute__((always_inline)) static float tinymt32_generate_float01(tinymt32_t* random) {
     tinymt32_next_state(random);
     return tinymt32_temper_conv(random) - 1.0f;
 }
@@ -193,7 +196,7 @@ __always_inline static float tinymt32_generate_float01(tinymt32_t* random) {
  * @param random tinymt internal status
  * @return floating point number r (0.0 < r <= 1.0)
  */
-__always_inline static float tinymt32_generate_floatOC(tinymt32_t* random) {
+inline __attribute__((always_inline)) static float tinymt32_generate_floatOC(tinymt32_t* random) {
     tinymt32_next_state(random);
     return 1.0f - tinymt32_generate_float(random);
 }
@@ -205,7 +208,7 @@ __always_inline static float tinymt32_generate_floatOC(tinymt32_t* random) {
  * @param random tinymt internal status
  * @return floating point number r (0.0 < r < 1.0)
  */
-__always_inline static float tinymt32_generate_floatOO(tinymt32_t* random) {
+inline __attribute__((always_inline)) static float tinymt32_generate_floatOO(tinymt32_t* random) {
     tinymt32_next_state(random);
     return tinymt32_temper_conv_open(random) - 1.0f;
 }
@@ -219,7 +222,7 @@ __always_inline static float tinymt32_generate_floatOO(tinymt32_t* random) {
  * @param random tinymt internal status
  * @return floating point number r (0.0 <= r < 1.0)
  */
-__always_inline static double tinymt32_generate_32double(tinymt32_t* random) {
+inline __attribute__((always_inline)) static double tinymt32_generate_32double(tinymt32_t* random) {
     tinymt32_next_state(random);
     return tinymt32_temper(random) * (1.0 / 4294967296.0);
 }
@@ -250,7 +253,9 @@ __always_inline static double tinymt32_generate_32double(tinymt32_t* random) {
  * @param x 32-bit integer
  * @return 32-bit integer
  */
-static __always_inline uint32_t ini_func1(uint32_t x) { return (x ^ (x >> 27)) * UINT32_C(1664525); }
+static inline __attribute__((always_inline)) uint32_t ini_func1(uint32_t x) {
+    return (x ^ (x >> 27)) * UINT32_C(1664525);
+}
 
 /**
  * This function represents a function used in the initialization
@@ -258,13 +263,15 @@ static __always_inline uint32_t ini_func1(uint32_t x) { return (x ^ (x >> 27)) *
  * @param x 32-bit integer
  * @return 32-bit integer
  */
-static __always_inline uint32_t ini_func2(uint32_t x) { return (x ^ (x >> 27)) * UINT32_C(1566083941); }
+static inline __attribute__((always_inline)) uint32_t ini_func2(uint32_t x) {
+    return (x ^ (x >> 27)) * UINT32_C(1566083941);
+}
 
 /**
  * This function certificate the period of 2^127-1.
  * @param random tinymt state vector.
  */
-static __always_inline void period_certification(tinymt32_t* random) {
+static inline __attribute__((always_inline)) void period_certification(tinymt32_t* random) {
     if ((random->status[0] & TINYMT32_MASK) == 0 && random->status[1] == 0 && random->status[2] == 0 &&
         random->status[3] == 0) {
         random->status[0] = 'T';
@@ -280,7 +287,7 @@ static __always_inline void period_certification(tinymt32_t* random) {
  * @param random tinymt state vector.
  * @param seed a 32-bit unsigned integer used as a seed.
  */
-static __always_inline void tinymt32_init(tinymt32_t* random, uint32_t seed) {
+static inline __attribute__((always_inline)) void tinymt32_init(tinymt32_t* random, uint32_t seed) {
     random->status[0] = seed;
     random->status[1] = random->mat1;
     random->status[2] = random->mat2;
@@ -303,7 +310,8 @@ static __always_inline void tinymt32_init(tinymt32_t* random, uint32_t seed) {
  * @param init_key the array of 32-bit integers, used as a seed.
  * @param key_length the length of init_key.
  */
-static __always_inline void tinymt32_init_by_array(tinymt32_t* random, uint32_t init_key[], int key_length) {
+static inline __attribute__((always_inline)) void tinymt32_init_by_array(tinymt32_t* random, uint32_t init_key[],
+                                                                         int key_length) {
     const int lag = 1;
     const int mid = 1;
     const int size = 4;

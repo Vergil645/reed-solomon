@@ -20,7 +20,9 @@
 #include "prng/tinymt32.c"
 
 #define ALIGNMENT 32
-static __always_inline size_t align(size_t val) { return (val + ALIGNMENT - 1) / ALIGNMENT * ALIGNMENT; }
+static inline __attribute__((always_inline)) size_t align(size_t val) {
+    return (val + ALIGNMENT - 1) / ALIGNMENT * ALIGNMENT;
+}
 
 RLC_t* rlc_create() {
     gf256_init();

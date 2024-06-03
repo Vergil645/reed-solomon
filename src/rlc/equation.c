@@ -7,7 +7,7 @@
 #define MIN(a, b) (((a) <= (b)) ? (a) : (b))
 
 // #define ALIGNMENT 32
-// static __always_inline size_t align(size_t val) {
+// static inline size_t align(size_t val) {
 //     return (val + ALIGNMENT - 1) / ALIGNMENT * ALIGNMENT;
 // }
 
@@ -119,7 +119,7 @@ bool equation_adjust_non_zero_bounds(equation_t* eq) {
         return false;
     }
     bool result1 = full_symbol_adjust_min_coef(eq);
-    __attribute_maybe_unused__ bool result2 = full_symbol_adjust_max_coef(eq);
+    bool result2 __attribute__((unused)) = full_symbol_adjust_max_coef(eq);
     assert(result1 == result2);
     return result1;
 }
