@@ -240,8 +240,10 @@ int main(void) {
 
     for (int i = 0; i < TESTS_CNT; ++i) {
         size_t symbol_size = SYMBOL_SIZE;
-        uint16_t k = 1000 + rand() % 1001;
-        uint16_t r = 10 + rand() % 71;
+        // uint16_t k = 1000 + rand() % 1001;
+        // uint16_t r = 10 + rand() % 71;
+        uint16_t k = 2000;
+        uint16_t r = 40;
         uint16_t t = r;
         int err;
 
